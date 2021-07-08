@@ -39,6 +39,11 @@ data.score %>%
   cor()
 ```
 
+```{r}
+ggpairs(data.score, aes(colour = "blue", alpha = 0.4))
+```
+
+
 ```{r summaries}
 my_skim <- skim_with(numeric = sfl(hist = NULL))
 my_skim(data.score)  %>%
