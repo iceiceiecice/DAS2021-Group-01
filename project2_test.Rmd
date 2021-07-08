@@ -1,30 +1,72 @@
 ---
 title: "project2_test"
-author: "zihexu"
+author: "Group_01"
 date: "2021/7/7"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE, comment = NA)
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+```{r libraries}
+library(tidyverse)
+library(moderndive)
+library(skimr)
+library(kableExtra)
+library(gridExtra)
+library(broom)
+library(plotly)
+library(GGally)
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r data, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+data <- read.csv("dataset1.csv")
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r data.score}
+data.score <- data %>%
+  dplyr::select(Total.Number.of.Family.members,Total.Household.Income,
+                Total.Food.Expenditure, Household.Head.Age, House.Floor.Area, House.Age)
+```
+
+```{r}
+data.score %>%
+  cor()
+```
+
+```{r summaries}
+my_skim <- skim_with(numeric = sfl(hist = NULL))
+my_skim(data.score)  %>%
+  dplyr::select(-skim_type) %>%
+  as_tibble() %>%
+  kable(col.names = c("Variable", "Missing", "Complete", "Mean", "SD", "Min.", "1st Q.",
+                      "Median", "3rd Q.", "Max."),
+        caption = "Summary statistics",
+        booktabs = TRUE,  digits = 2) %>%
+  kable_styling(font_size = 10, latex_options = "hold_position") #create a summarized statistics table for the three variables
+```
+
+## Gender&age boxplot
+```{r}
+data.gender <- data %>%
+  select(Household.Head.Sex, Household.Head.Age)
+```
+
+```{r}
+ggplot(data = data.gender, aes(x = Household.Head.Sex, y = Household.Head.Age, fill = Household.Head.Sex)) +
+  geom_boxplot() +
+  labs(x = "Gender", y = "Age")+ 
+  theme(legend.position = "none")
+```
+
+
+
+
+
+
+
+
+
+
+

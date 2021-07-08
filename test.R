@@ -20,3 +20,11 @@ data.score <- data %>%
 
 data.score %>%
   cor()
+
+
+
+
+
+
+
+
