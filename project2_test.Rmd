@@ -27,7 +27,8 @@ data <- read.csv("dataset1.csv")
 ```{r data.score}
 data.score <- data %>%
   dplyr::select(Total.Number.of.Family.members,Total.Household.Income,
-                Total.Food.Expenditure, Household.Head.Age, House.Floor.Area, House.Age)
+                Total.Food.Expenditure, Household.Head.Age, House.Floor.Area, House.Age,
+                Number.of.bedrooms, Electricity)
 ```
 
 ```{r}
@@ -75,6 +76,41 @@ ggplot(data = data.balance, aes(x = Total.Household.Income, y = Total.Food.Expen
   geom_smooth(method = glm, se = FALSE) +
   theme(legend.position = "none")
 ```
+
+
+## Model
+
+```{r}
+model_full <- glm(Total.Number.of.Family.members ~ Total.Household.Income +
+                Total.Food.Expenditure + Household.Head.Age + House.Floor.Area + House.Age +
+                Number.of.bedrooms + Electricity, data = data)
+```
+
+```{r}
+model_full %>%
+  summary()
+```
+
+```{r}
+model_significant <- glm(Total.Number.of.Family.members ~ Total.Household.Income +
+                Total.Food.Expenditure + House.Age +
+                Number.of.bedrooms, data = data)
+```
+
+```{r}
+model_significant %>%
+  summary()
+```
+
+
+
+
+
+
+
+
+
+
 
 
 
