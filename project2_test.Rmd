@@ -47,7 +47,7 @@ my_skim(data.score)  %>%
   kable_styling(font_size = 10, latex_options = "hold_position") #create a summarized statistics table for the three variables
 ```
 
-## Gender&age boxplot
+## Gender&age
 ```{r}
 data.gender <- data %>%
   select(Household.Head.Sex, Household.Head.Age)
@@ -62,7 +62,19 @@ ggplot(data = data.gender, aes(x = Household.Head.Sex, y = Household.Head.Age, f
 
 
 
+## balance
+```{r}
+data.balance <- data %>%
+  select(Total.Household.Income, Total.Food.Expenditure)
+```
 
+```{r}
+ggplot(data = data.balance, aes(x = Total.Household.Income, y = Total.Food.Expenditure)) +
+  geom_point() +
+  labs(x = "Income", y = "Expenditure") +
+  geom_smooth(method = glm, se = FALSE) +
+  theme(legend.position = "none")
+```
 
 
 
