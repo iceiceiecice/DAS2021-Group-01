@@ -8,7 +8,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE, comment = NA)
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, warning = FALSE, message = FALSE, comment = NA)
 ```
 
 ```{r libraries}
@@ -169,6 +169,50 @@ Now, let's add the estimates of the log-odds to our data set:
 data.sex_number <- data.sex_number %>%
   mutate(logodds.male = predict(model_sex_number))
 ```
+
+## Odds
+
+```{r}
+plot_model(model_sex_number, show.values = TRUE, axis.lim = c(1,1.5),
+           title = "Odds (Male household)", show.p = FALSE)
+```
+
+
+Now, let's add the estimates of the odds to our data set:
+
+```{r}
+data.sex_number <- data.sex_number %>%
+  mutate(odds.male = exp(logodds.male))
+```
+
+
+## Probabilities
+
+```{r}
+data.sex_number <- data.sex_number %>%
+  mutate(probs.male = fitted(model_sex_number))
+```
+
+
+## Plot the probability of being male
+
+```{r}
+ggplot(data = data.sex_number, aes(x = Total.Number.of.Family.members, y = probs.male)) +
+  geom_smooth(method="glm", 
+              method.args = list(family="binomial"), 
+              se = FALSE) +
+  labs(x = "number of family members", y = "Probability of household being male")
+```
+
+```{r}
+plot_model(model_sex_number, type = "pred", title = "",
+            axis.title = c("number of family members", "Prob. of household being male"))
+```
+
+
+
+
+
 
 
 
