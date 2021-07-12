@@ -22,10 +22,12 @@ library(plotly)
 library(GGally)
 library(sjPlot)
 library(janitor)
+library(leaps)
 ```
 
 ```{r data, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
 data <- read.csv("dataset1.csv")
+data<-data[,-2] #remove region colummn as all entries the same
 ```
 
 
@@ -131,7 +133,7 @@ ggplot(data = data.balance, aes(x = Total.Household.Income, y = Total.Food.Expen
   theme(legend.position = "none")
 ```
 
-The above plot highlights a possible outlier in terms of income, this could be a data entry error or just an outlier. Removing this observation from the data set and replotting provides the following scatter diagram.
+The above plot highlights a possible outlier in terms of income, this could be a data entry error or just an outlier. Removing this observation from the data set and plotting provides the following scatter diagram.
 
 ```{r balance without outlier}
 index<-which.max(data.balance$Total.Household.Income)
@@ -145,13 +147,21 @@ ggplot(data = balance_without_outlier, aes(x = Total.Household.Income, y = Total
 
 ## Model
 
-```{r full model}
+```{r}
+models <- regsubsets(Total.Number.of.Family.members~., data = data, nvmax = 10)
+summary(models)
+res.sum <- summary(models)
+selection.criteria<- c(Adj.R2 = which.max(res.sum$adjr2), CP = which.min(res.sum$cp),
+  BIC = which.min(res.sum$bic)); selection.criteria
+```
+
+```{r full numerical model}
 model_full <- glm(Total.Number.of.Family.members ~ Total.Household.Income +
                 Total.Food.Expenditure + Household.Head.Age + House.Floor.Area + House.Age +
                 Number.of.bedrooms + Electricity, data = data)
 ```
 
-```{r full model summary}
+```{r full numerical model summary}
 model_full %>%
   summary()
 ```
@@ -279,15 +289,36 @@ plot_model(model_sex_number, type = "pred", title = "",
             axis.title = c("number of family members", "Prob. of household being male"))
 ```
 
+## GLM
+
+```{r factors}
+data$Total.Number.of.Family.members<-as.factor(data$Total.Number.of.Family.members)
+data$Household.Head.Sex<- as.factor(data$Household.Head.Sex)
+data$Type.of.Household<-as.factor(data$Type.of.Household)
+```
+
+```{r glm test model}
+test.model<- glm(Total.Number.of.Family.members~ Total.Household.Income +
+                Total.Food.Expenditure + Household.Head.Sex + Household.Head.Age + Type.of.Household + House.Floor.Area + House.Age + Number.of.bedrooms + Electricity, data=data, family = binomial(link = "logit"))
+
+test.model%>% summary()
+```
 
 
+```{r glm sex interactions test model}
+int.test.model<- glm(Total.Number.of.Family.members~ (Total.Household.Income +
+                Total.Food.Expenditure + Household.Head.Age + Type.of.Household + House.Floor.Area + House.Age + Number.of.bedrooms + Electricity)* Household.Head.Sex, data=data, family = binomial(link = "logit"))
 
+int.test.model%>% summary()
+```
 
-
-
-
-
-
-
+```{r model comparison 2}
+Models <- c('No Interactions','Interactions with Head of Household Sex')
+bind_rows(glance(test.model), glance(int.test.model),.id="Model") %>%
+  select(Model,AIC,BIC) %>%
+  mutate(Model=Models) %>%  
+  kable(booktabs = TRUE,digits = 2) %>% 
+  kable_styling(latex_options = 'HOLD_position', )
+```
 
 
