@@ -21,11 +21,13 @@ library(broom)
 library(plotly)
 library(GGally)
 library(sjPlot)
+library(janitor)
 ```
 
 ```{r data, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
 data <- read.csv("dataset1.csv")
 ```
+
 
 ```{r data.score}
 data.score <- data %>%
@@ -34,85 +36,148 @@ data.score <- data %>%
                 Number.of.bedrooms, Electricity)
 ```
 
-```{r}
+```{r distribution of response variable, eval = TRUE, fig.align='center', out.width='80%', fig.pos = "H"}
+barplot1<- ggplot(data, aes(x=Total.Number.of.Family.members))+ 
+  geom_bar(color = "white") +
+  theme(legend.position="none", plot.title=element_text(hjust=0.5))+
+      labs(x ="Number of Members in a Household");barplot1
+```
+
+```{r summary of levels of response variables}
+table_members<-data%>% 
+  tabyl(Total.Number.of.Family.members) %>%
+  adorn_totals("row") %>%
+  adorn_pct_formatting(); table_members
+```
+
+```{r correlation}
 data.score %>%
   cor()
 ```
 
-```{r}
-ggpairs(data.score, aes(colour = "blue", alpha = 0.4))
+```{r pairs}
+ggpairs(data.score, aes(colour = as.factor(data$Household.Head.Sex), alpha = 0.4))
 ```
 
-
-```{r summaries}
+```{r numerical summaries}
 my_skim <- skim_with(numeric = sfl(hist = NULL))
 my_skim(data.score)  %>%
   dplyr::select(-skim_type) %>%
   as_tibble() %>%
   kable(col.names = c("Variable", "Missing", "Complete", "Mean", "SD", "Min.", "1st Q.",
                       "Median", "3rd Q.", "Max."),
-        caption = "Summary statistics",
+        caption = "Summary statistics of numerical variables",
         booktabs = TRUE,  digits = 2) %>%
   kable_styling(font_size = 10, latex_options = "hold_position") #create a summarized statistics table for the three variables
 ```
 
-## Gender&age
-```{r}
+```{r categorical summaries}
+data.cat<-as.data.frame(cbind(data$Household.Head.Sex, data$Type.of.Household))
+colnames(data.cat)<-c("Household.Head.Sex", "Type.of.Household")
+
+table_household<- data.cat %>% 
+  tabyl(Type.of.Household) %>%
+  adorn_totals("row") %>%
+  adorn_pct_formatting(); table_household
+
+table_sex<-data.cat %>% 
+  tabyl(Household.Head.Sex) %>%
+  adorn_totals("row") %>%
+  adorn_pct_formatting(); table_sex
+
+```
+
+## Gender & Age
+```{r gender data}
 data.gender <- data %>%
   select(Household.Head.Sex, Household.Head.Age)
 ```
 
-```{r}
+```{r boxplot of age by gender}
 ggplot(data = data.gender, aes(x = Household.Head.Sex, y = Household.Head.Age, fill = Household.Head.Sex)) +
   geom_boxplot() +
   labs(x = "Gender", y = "Age")+ 
   theme(legend.position = "none")
 ```
 
+## Household Income Balance
 
-
-## balance
-```{r}
+```{r balance}
 data.balance <- data %>%
   select(Total.Household.Income, Total.Food.Expenditure)
 ```
 
-```{r}
+```{r balance boxplot}
+ggplot(data.balance, aes(y=Total.Household.Income)) +
+  geom_boxplot(color="black") +
+  labs(x="",y="Total Household Income", title="Total Household Income") +
+  theme(plot.title=element_text(hjust=0.5)) +
+  scale_x_discrete(labels=NULL)
+```
+
+```{r balance boxplot}
+ggplot(data.balance, aes(y=log(Total.Household.Income))) +
+  geom_boxplot(color="black") +
+  labs(x="",y="Log Total Household Income", title="Log Total Household Income") +
+  theme(plot.title=element_text(hjust=0.5)) +
+  scale_x_discrete(labels=NULL)
+```
+
+```{r balance_plot}
 ggplot(data = data.balance, aes(x = Total.Household.Income, y = Total.Food.Expenditure)) +
-  geom_point() +
+  geom_point(color="black", position="jitter", alpha=0.5) +
   labs(x = "Income", y = "Expenditure") +
-  geom_smooth(method = glm, se = FALSE) +
+  geom_smooth(method = glm, se = FALSE, color="red") +
   theme(legend.position = "none")
 ```
 
+The above plot highlights a possible outlier in terms of income, this could be a data entry error or just an outlier. Removing this observation from the data set and replotting provides the following scatter diagram.
+
+```{r balance without outlier}
+index<-which.max(data.balance$Total.Household.Income)
+balance_without_outlier<- data.balance[-index,]
+ggplot(data = balance_without_outlier, aes(x = Total.Household.Income, y = Total.Food.Expenditure)) +
+  geom_point(color="black", position="jitter", alpha=0.5) +
+  labs(x = "Income", y = "Expenditure") +
+  geom_smooth(method = glm, se = FALSE, color="red") +
+  theme(legend.position = "none")
+```
 
 ## Model
 
-```{r}
+```{r full model}
 model_full <- glm(Total.Number.of.Family.members ~ Total.Household.Income +
                 Total.Food.Expenditure + Household.Head.Age + House.Floor.Area + House.Age +
                 Number.of.bedrooms + Electricity, data = data)
 ```
 
-```{r}
+```{r full model summary}
 model_full %>%
   summary()
 ```
 
-```{r}
+```{r significant factors model}
 model_significant <- glm(Total.Number.of.Family.members ~ Total.Household.Income +
                 Total.Food.Expenditure + House.Age +
                 Number.of.bedrooms, data = data)
 ```
 
-```{r}
+```{r summary of significant factors model}
 model_significant %>%
   summary()
 ```
 
+```{r model comparison}
+Models <- c('Full Model','Significant Factors Model')
+bind_rows(glance(model_full), glance(model_significant),.id="Model") %>%
+  select(Model,AIC,BIC) %>%
+  mutate(Model=Models) %>%  
+  kable(booktabs = TRUE,digits = 2) %>% 
+  kable_styling(latex_options = 'HOLD_position', ) # to get a table of AIC & BIC
+```
 
 
-## Family number & Gender
+## Family Members & Gender
 ```{r}
 data.sex_number <- data %>%
   select(Household.Head.Sex, Total.Number.of.Family.members)
