@@ -8,7 +8,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, eval = TRUE, warning = FALSE, message = FALSE, comment = NA)
+knitr::opts_chunk$set(echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE, comment = NA)
 ```
 
 ```{r libraries}
@@ -30,6 +30,9 @@ data <- read.csv("dataset1.csv")
 data<-data[,-2] #remove region colummn as all entries the same
 ```
 
+# Introduction {#sec:Intro}
+
+Data come from the FIES (Family Income and Expenditure Survey) recorded in the Philippines. The survey, which is undertaken every three years, is aimed at providing data on family income and expenditure. The data obtained from this survey are from different regions across the Philippines.
 
 ```{r data.score}
 data.score <- data %>%
@@ -89,6 +92,12 @@ table_sex<-data.cat %>%
 
 ```
 
+```{r barplot of sex by type of household, eval = TRUE, fig.align='center', fig.cap="Barplot of household head'ssex by type of household", out.width='80%', fig.pos = "H"}
+ggplot(data = data, aes(x = Type.of.Household, group = Household.Head.Sex)) +
+  geom_bar(aes(y = ..prop.., fill = Household.Head.Sex), stat = "count", position = "dodge") +
+  labs(x = "Type of Household", y = "Proportion")
+```
+
 ## Gender & Age
 ```{r gender data}
 data.gender <- data %>%
@@ -109,7 +118,7 @@ data.balance <- data %>%
   select(Total.Household.Income, Total.Food.Expenditure)
 ```
 
-```{r balance boxplot}
+```{r balance boxplot1}
 ggplot(data.balance, aes(y=Total.Household.Income)) +
   geom_boxplot(color="black") +
   labs(x="",y="Total Household Income", title="Total Household Income") +
@@ -117,7 +126,7 @@ ggplot(data.balance, aes(y=Total.Household.Income)) +
   scale_x_discrete(labels=NULL)
 ```
 
-```{r balance boxplot}
+```{r balance boxplot2}
 ggplot(data.balance, aes(y=log(Total.Household.Income))) +
   geom_boxplot(color="black") +
   labs(x="",y="Log Total Household Income", title="Log Total Household Income") +
@@ -199,6 +208,8 @@ ggplot(data = data.sex_number, aes(x = Household.Head.Sex, y = Total.Number.of.F
   labs(x = "Gender", y = "Number of Family member")+ 
   theme(legend.position = "none")
 ```
+
+Hence we can see that the male household head's number of family members tend to be more then the female's.
 
 ## Log-odds
 ```{r}
