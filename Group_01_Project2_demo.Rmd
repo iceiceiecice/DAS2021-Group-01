@@ -2,12 +2,12 @@
 title: "Group_01_Project2_demo"
 author: "Group_01"
 output:
-  html_document:
-    df_print: paged
   pdf_document:
     latex_engine: xelatex
     number_sections: no
     keep_tex: true
+  html_document:
+    df_print: paged
 fig_caption: yes
 ---
 
@@ -52,7 +52,7 @@ data.score <- data %>%
 ```
 
 Table 1 shows summary data for all the variables from the FIES (Family Income and Expenditure Survey) data.
-First, the total number of family members ranges from 1 to 15, with the middle 50% of number of family members falling between 3 and 6 also an average number of family members of 4. Secondly, we 
+First, the total number of family members ranges from 1 to 15, with the middle 50% of number of family members falling between 3 and 6 also an average number of family members of 4.67. Secondly, the total household income is range from 11988 to 6042860. The middle 50% of total household income is between 118565 and 328335, with 269540.48 on average. Next, we may look at the total food expenditure, which is the range of 6781 to 327724, with the middle 50% lies between 51922 and 98493. Then, 
 
 ```{r numerical summaries}
 my_skim <- skim_with(numeric = sfl(hist = NULL))
@@ -63,8 +63,11 @@ my_skim(data.score)  %>%
                       "Median", "3rd Q.", "Max."),
         caption = "Summary statistics of numerical variables",
         booktabs = TRUE,  digits = 2) %>%
-  kable_styling(font_size = 10, latex_options = "hold_position") #create a summarized statistics table for all variables
+  kable_styling(font_size = 10, latex_options = "scale_down") 
+#create a summarized statistics table for all variables
 ```
+
+Figure 1 shows the distribution of the total number of family members. This distribution plot shows that the number of family members fitts poisson distribution.
 
 ```{r distribution of response variable, eval = TRUE, fig.align='center', out.width='80%', fig.pos = "H"}
 barplot1<- ggplot(data, aes(x=Total.Number.of.Family.members))+ 
@@ -73,19 +76,38 @@ barplot1<- ggplot(data, aes(x=Total.Number.of.Family.members))+
       labs(x ="Number of Members in a Household");barplot1
 ```
 
+The correlation coefficient between all variables shows in Table 2. The correlation coefficient between total food expenditure and total number of family members is 0.469, and the correlation coefficient between total household income and total number of family members is 0.192. By the way, the correlation coefficient between household Head's age, house floor area, house age and total number of family members are negative, which shows the rise of those three variables will lead to the decrease of the total number of family members.
+
+```{r correlation}
+data.score %>%
+  cor() %>%
+  kable(caption = 'Table 2: Correlation of all variables.',booktabs = TRUE, digits = 3) %>%
+  kable_styling(font_size = 10, latex_options = "scale_down")
+#calculate the correlation scores
+```
 
 
 
 
+```{r pairs, echo=FALSE, out.width= '100%', fig.cap="Figrue 3: Paired plots of the variables",fig.align = "center"}
+ggpairs(data.score, aes(colour = as.factor(data$Household.Head.Sex), alpha = 0.4))
+#to get pairs plots.
+```
 
 
+# Formal Data Analysis {#sec:FDA}
 
+```{r model}
+model_poisson_full <- glm(Total.Number.of.Family.members ~ Total.Household.Income +
+                Total.Food.Expenditure + Household.Head.Age + House.Floor.Area + House.Age +
+                Number.of.bedrooms + Electricity, family = poisson(link = "log"), data = data.score)
+model_poisson_significant <- glm(Total.Number.of.Family.members ~ Total.Household.Income +
+                Total.Food.Expenditure + House.Age + Number.of.bedrooms, family = poisson(link = "log"), data = data.score)
+```
 
-
-
-
-
-
+```{r}
+plot_summs(model_poisson_full,model_poisson_significant, scale = TRUE, exp = TRUE, model.names = c("full model", "significant model"))
+```
 
 
 
