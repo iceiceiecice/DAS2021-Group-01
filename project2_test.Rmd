@@ -332,4 +332,51 @@ bind_rows(glance(test.model), glance(int.test.model),.id="Model") %>%
   kable_styling(latex_options = 'HOLD_position', )
 ```
 
+# Poisson regression model
+
+```{r}
+mean(data.score$Total.Number.of.Family.members)
+```
+
+```{r}
+var(data.score$Total.Number.of.Family.members)
+```
+
+Since the standard deviation of total number of family members is slightly bigger than the mean of total number of family members, thus, there won't have over-dispesion in our model.
+
+```{r}
+model_poisson_full <- glm(Total.Number.of.Family.members ~ Total.Household.Income +
+                Total.Food.Expenditure + Household.Head.Age + House.Floor.Area + House.Age +
+                Number.of.bedrooms + Electricity, family = poisson(link = "log"), data = data.score)
+```
+
+```{r}
+model_poisson_full %>%
+  summary()
+```
+
+```{r}
+model_poisson_significant <- glm(Total.Number.of.Family.members ~ Total.Household.Income +
+                Total.Food.Expenditure + House.Age + Number.of.bedrooms, family = poisson(link = "log"), data = data.score)
+```
+
+```{r}
+model_poisson_significant %>%
+  summary()
+```
+
+```{r}
+data$phat <- predict(model_poisson_full, type = "response")
+```
+
+
+```{r}
+ggplot(data, aes(x = Total.Food.Expenditure, y = phat, colour = Household.Head.Sex)) +
+  geom_point(aes(y = Total.Number.of.Family.members), alpha = 0.3, position = position_jitter(h = 0.2)) +
+  geom_smooth(method = glm, se = FALSE) +
+  labs(x = "total Expenditure", y = "expected number of family members")
+```
+
+
+
 
