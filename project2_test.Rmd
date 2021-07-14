@@ -23,6 +23,9 @@ library(GGally)
 library(sjPlot)
 library(janitor)
 library(leaps)
+library(jtools)
+library(broom)
+library(ggstance)
 ```
 
 ```{r data, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
@@ -376,6 +379,23 @@ ggplot(data, aes(x = Total.Food.Expenditure, y = phat, colour = Household.Head.S
   geom_smooth(method = glm, se = FALSE) +
   labs(x = "total Expenditure", y = "expected number of family members")
 ```
+
+```{r}
+plot_summs(model_poisson_full,model_poisson_significant, scale = TRUE, exp = TRUE, model.names = c("full model", "significant model"))
+```
+
+```{r}
+plot_summs(model_poisson_significant, scale = TRUE, exp = TRUE)
+```
+
+```{r}
+plot_summs(model_full,model_poisson_full, scale = TRUE, exp = TRUE, model.names = c("full model", "significant model"))
+```
+
+
+
+
+
 
 
 

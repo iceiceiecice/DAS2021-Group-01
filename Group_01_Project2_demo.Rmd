@@ -1,0 +1,92 @@
+---
+title: "Group_01_Project2_demo"
+author: "Group_01"
+output:
+  html_document:
+    df_print: paged
+  pdf_document:
+    latex_engine: xelatex
+    number_sections: no
+    keep_tex: true
+fig_caption: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE, comment = NA)
+```
+
+```{r libraries}
+library(tidyverse)
+library(moderndive)
+library(skimr)
+library(kableExtra)
+library(gridExtra)
+library(broom)
+library(plotly)
+library(GGally)
+library(sjPlot)
+library(janitor)
+library(leaps)
+library(jtools)
+library(ggstance)
+```
+
+```{r data, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+data <- read.csv("dataset1.csv")
+data<-data[,-2] #remove region colummn as all entries the same
+```
+
+# Introduction {#sec:Intro}
+
+Data come from the FIES (Family Income and Expenditure Survey) recorded in the Philippines. The survey, which is undertaken every three years, is aimed at providing data on family income and expenditure. The data obtained from this survey are from different regions across the Philippines.
+
+In particular, this report further explores how does total household income, total foods expenditure, household head's sex, household head's age, type of household, house floor area, house age, number of bedrooms and electricity infect the number of family members.
+
+# Exploratory Data Analysis {#sec:EDA}
+
+```{r data.score}
+data.score <- data %>%
+  dplyr::select(Total.Number.of.Family.members,Total.Household.Income,
+                Total.Food.Expenditure, Household.Head.Age, House.Floor.Area, House.Age,
+                Number.of.bedrooms, Electricity)
+```
+
+Table 1 shows summary data for all the variables from the FIES (Family Income and Expenditure Survey) data.
+First, the total number of family members ranges from 1 to 15, with the middle 50% of number of family members falling between 3 and 6 also an average number of family members of 4. Secondly, we 
+
+```{r numerical summaries}
+my_skim <- skim_with(numeric = sfl(hist = NULL))
+my_skim(data.score)  %>%
+  dplyr::select(-skim_type) %>%
+  as_tibble() %>%
+  kable(col.names = c("Variable", "Missing", "Complete", "Mean", "SD", "Min.", "1st Q.",
+                      "Median", "3rd Q.", "Max."),
+        caption = "Summary statistics of numerical variables",
+        booktabs = TRUE,  digits = 2) %>%
+  kable_styling(font_size = 10, latex_options = "hold_position") #create a summarized statistics table for all variables
+```
+
+```{r distribution of response variable, eval = TRUE, fig.align='center', out.width='80%', fig.pos = "H"}
+barplot1<- ggplot(data, aes(x=Total.Number.of.Family.members))+ 
+  geom_bar(color = "white") +
+  theme(legend.position="none", plot.title=element_text(hjust=0.5))+
+      labs(x ="Number of Members in a Household");barplot1
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
