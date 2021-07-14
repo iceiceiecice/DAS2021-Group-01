@@ -33,7 +33,7 @@ library(ggstance)
 
 ```{r data, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
 data <- read.csv("dataset1.csv")
-data<-data[,-2] #remove region colummn as all entries the same
+data<-data[,-2] #remove region column as all entries the same
 ```
 
 # Introduction {#sec:Intro}
@@ -69,7 +69,7 @@ my_skim(data.score)  %>%
 
 Figure 1 shows the distribution of the total number of family members. This distribution plot shows that the number of family members fitts poisson distribution.
 
-```{r distribution of response variable, eval = TRUE, fig.align='center', out.width='80%', fig.pos = "H"}
+```{r distribution of response variable, eval = TRUE, fig.cap="Histogram of total number of family members",fig.align = "center", out.width='80%', fig.pos = "H"}
 barplot1<- ggplot(data, aes(x=Total.Number.of.Family.members))+ 
   geom_bar(color = "white") +
   theme(legend.position="none", plot.title=element_text(hjust=0.5))+
@@ -81,7 +81,7 @@ The correlation coefficient between all variables shows in Table 2. The correlat
 ```{r correlation}
 data.score %>%
   cor() %>%
-  kable(caption = 'Table 2: Correlation of all variables.',booktabs = TRUE, digits = 3) %>%
+  kable(caption = 'Correlation of all variables.',booktabs = TRUE, digits = 3) %>%
   kable_styling(font_size = 10, latex_options = "scale_down")
 #calculate the correlation scores
 ```
@@ -89,7 +89,7 @@ data.score %>%
 
 
 
-```{r pairs, echo=FALSE, out.width= '100%', fig.cap="Figrue 3: Paired plots of the variables",fig.align = "center"}
+```{r pairs, echo=FALSE, out.width= '100%', fig.cap="Paired plots of the variables",fig.align = "center"}
 ggpairs(data.score, aes(colour = as.factor(data$Household.Head.Sex), alpha = 0.4))
 #to get pairs plots.
 ```
