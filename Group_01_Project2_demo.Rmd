@@ -52,7 +52,7 @@ data.score <- data %>%
 ```
 
 Table 1 shows summary data for all the variables from the FIES (Family Income and Expenditure Survey) data.
-First, the total number of family members ranges from 1 to 15, with the middle 50% of number of family members falling between 3 and 6 also an average number of family members of 4.67. Secondly, the total household income is range from 11988 to 6042860. The middle 50% of total household income is between 118565 and 328335, with 269540.48 on average. Next, we may look at the total food expenditure, which is the range of 6781 to 327724, with the middle 50% lies between 51922 and 98493. Then, 
+First, the total number of family members ranges from 1 to 15, with the middle 50% of number of family members falling between 3 and 6 also an average number of family members of 4.67. Secondly, the total household income is range from 11988 to 6042860. The middle 50% of total household income is between 118565 and 328335, with 269540.48 on average. Thirdly, we may look at the total food expenditure, which is the range of 6781 to 327724, with the middle 50% lies between 51922 and 98493. Then, the household head's age is range from 17 to 99, with the middle 50% falling between 41 and 63. Next, the house floor area is range from 5 to 900. The middle 50% of house floor area is between 32 and 102 with an average area of 90.92. Next, the house age is range from 0 to 100, with the middle 50% falling between 12 and 31. Then, the number of bedrooms is range from 0 to 9 and the average number of bedrooms is 2.26, which indicate that the households have an average of 2.26 bedrooms in their house. Finally, we may look at the electricity, the average score of electricity is 0.93, which means 93% household have electricity in their house.
 
 ```{r numerical summaries}
 my_skim <- skim_with(numeric = sfl(hist = NULL))
@@ -67,7 +67,8 @@ my_skim(data.score)  %>%
 #create a summarized statistics table for all variables
 ```
 
-Figure 1 shows the distribution of the total number of family members. This distribution plot shows that the number of family members fitts poisson distribution.
+
+Figure 1 shows the distribution of the total number of family members. This distribution plot shows that the number of family members fits poisson distribution.
 
 ```{r distribution of response variable, eval = TRUE, fig.cap="Histogram of total number of family members",fig.align = "center", out.width='80%', fig.pos = "H"}
 barplot1<- ggplot(data, aes(x=Total.Number.of.Family.members))+ 
@@ -107,8 +108,16 @@ model_poisson_significant <- glm(Total.Number.of.Family.members ~ Total.Househol
 
 ```{r}
 plot_summs(model_poisson_full,model_poisson_significant, scale = TRUE, exp = TRUE, model.names = c("full model", "significant model"))
+# compare with full and significant model
 ```
 
-
+```{r model comparison}
+Models <- c('Full Model','Significant Factors Model')
+bind_rows(glance(model_poisson_full), glance(model_poisson_significant),.id="Model") %>%
+  select(Model,AIC,BIC) %>%
+  mutate(Model=Models) %>%  
+  kable(booktabs = TRUE,digits = 2) %>% 
+  kable_styling(latex_options = 'HOLD_position', ) # to get a table of AIC & BIC
+```
 
 
