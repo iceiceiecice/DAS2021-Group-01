@@ -31,18 +31,25 @@ library(ggstance)
 ```{r data, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
 data <- read.csv("dataset1.csv")
 data<-data[,-2] #remove region colummn as all entries the same
+data$Total.Household.Income<-data$Total.Household.Income/(1e4)
+data$Total.Food.Expenditure<-data$Total.Food.Expenditure/(1e4) 
+#scaling the income and expenditure variables to be measured in 10000 Phillipine Pesos
 ```
 
 # Introduction {#sec:Intro}
 
-Data come from the FIES (Family Income and Expenditure Survey) recorded in the Philippines. The survey, which is undertaken every three years, is aimed at providing data on family income and expenditure. The data obtained from this survey are from different regions across the Philippines.
+Data come from the FIES (Family Income and Expenditure Survey) recorded in the Philippines. The survey, which is undertaken every three years, is aimed at providing data on family income and expenditure. The data obtained from this survey are from different regions across the Philippines. This report will focus on one individual area, the Cordillera Administrative Region and so region has been removed from the dataset as it will not be informative as an explanatory variable.
 
-```{r data.score}
+The report will investigate which household related variables influence the number of people living in a household. The data used consists of 1725 observations of ten variables, two of which are categorical and the remaining are numerical. 
+
+```{r data.score} 
 data.score <- data %>%
   dplyr::select(Total.Number.of.Family.members,Total.Household.Income,
                 Total.Food.Expenditure, Household.Head.Age, House.Floor.Area, House.Age,
-                Number.of.bedrooms, Electricity)
+                Number.of.bedrooms, Electricity) #dataframe of just the numerical variables
 ```
+
+The distribution of the response variable of the number of members in a household can be seen in the following barplot. The modal response is 4 members and the distribution is right-skewed. 
 
 ```{r distribution of response variable, eval = TRUE, fig.align='center', out.width='80%', fig.pos = "H"}
 barplot1<- ggplot(data, aes(x=Total.Number.of.Family.members))+ 
@@ -51,6 +58,8 @@ barplot1<- ggplot(data, aes(x=Total.Number.of.Family.members))+
       labs(x ="Number of Members in a Household");barplot1
 ```
 
+Table 1 shows the count data for each level of the response variable and the percentage of total households in the region in each group.
+
 ```{r summary of levels of response variables}
 table_members<-data%>% 
   tabyl(Total.Number.of.Family.members) %>%
@@ -58,14 +67,20 @@ table_members<-data%>%
   adorn_pct_formatting(); table_members
 ```
 
+There is a moderate positive correlation (0.611) between the total household income and the household food expenditure. Additionally there is a slight positive correlation between the total household income and the number of bedrooms in the household (0.441) and the number of family members and total food expenditure (0.469. The other variables are all weakly correlated.
+
 ```{r correlation}
 data.score %>%
-  cor()
+  cor() #calculate the correlation between each of the quantitative variables
 ```
+
+The pairs plot is colour coded to illustrate any differences between the distributions of the quantitative variables when the head of household sex is included as a factor. The plots suggest the sex of the head of household may impact the number of family members in the household and the age of the head of the household.
 
 ```{r pairs}
 ggpairs(data.score, aes(colour = as.factor(data$Household.Head.Sex), alpha = 0.4))
 ```
+
+Table 2 shows the summaries for each of the numerical variables. There is no missing data within these variables and so no values will need to be imputed for the analysis in the report.
 
 ```{r numerical summaries}
 my_skim <- skim_with(numeric = sfl(hist = NULL))
@@ -78,6 +93,8 @@ my_skim(data.score)  %>%
         booktabs = TRUE,  digits = 2) %>%
   kable_styling(font_size = 10, latex_options = "hold_position") #create a summarized statistics table for the three variables
 ```
+
+Table 3 shows the summaries of the two categorical variables. Single family households make up approximately two-thirds of the survey responses in this region and only 0.5% (8) of responses came from households formed from non-related individuals. Of the 1725 households, less than a quarter (21.4%) had a female head of household.
 
 ```{r categorical summaries}
 data.cat<-as.data.frame(cbind(data$Household.Head.Sex, data$Type.of.Household))
@@ -95,17 +112,38 @@ table_sex<-data.cat %>%
 
 ```
 
-```{r barplot of sex by type of household, eval = TRUE, fig.align='center', fig.cap="Barplot of household head'ssex by type of household", out.width='80%', fig.pos = "H"}
+Figure shows that an extended family household or one formed by non-related individuals is more likely to have a female head, whereas a larger proportion of single family households have male heads. 
+
+```{r barplot of sex by type of household, eval = TRUE, fig.align='center', fig.cap="Barplot of household head's sex by type of household", out.width='80%', fig.pos = "H"}
 ggplot(data = data, aes(x = Type.of.Household, group = Household.Head.Sex)) +
   geom_bar(aes(y = ..prop.., fill = Household.Head.Sex), stat = "count", position = "dodge") +
   labs(x = "Type of Household", y = "Proportion")
 ```
 
-## Gender & Age
+## Analysis of Relationships between Explanatory Variables
+
+### Gender & Age
+
+As highlighted by the pairs plot, there appears to be a relationship between the sex and age of the head of the household. 
+
 ```{r gender data}
 data.gender <- data %>%
-  select(Household.Head.Sex, Household.Head.Age)
+  select(Household.Head.Sex, Household.Head.Age) #subsetting data to select variables of interest
 ```
+
+The minimum and maximum ages of household heads do not appear to differ greatly according to the individuals' sex, however they do differ at the 25th, 50th and 75th percentiles with male heads of households being consitently younger than their female counterparts. The standard deviation is also greater for the female group, but the substantially smaller group size for females may contribute to this larger variation.
+
+```{r summaries of age by sex}
+age.gender<- data.gender %>% 
+  group_by(Household.Head.Sex)%>%
+  summarize(n=n(),Mean=round(mean(Household.Head.Age),digits=2), St.Dev=round(sd(Household.Head.Age),digits=2),
+Min=min(Household.Head.Age), Q1 = quantile(Household.Head.Age,0.25), Median=median(Household.Head.Age),
+Q3 = quantile(Household.Head.Age,0.75), Max=max(Household.Head.Age)) %>%
+kable(caption = 'Summary statistics on the age of household heads by their sex.') %>%
+kable_styling(latex_options = "hold_position"); age.gender
+```
+
+The boxplot illustrates the previously summarised data. The boxplot identifies the two oldest male head of households as outliers (shown by the points above the whisker), however within the context of the data and when compared to the ages of female head of household boxplot, these ages do not appear unreasonable or unrealistic.
 
 ```{r boxplot of age by gender}
 ggplot(data = data.gender, aes(x = Household.Head.Sex, y = Household.Head.Age, fill = Household.Head.Sex)) +
@@ -114,12 +152,20 @@ ggplot(data = data.gender, aes(x = Household.Head.Sex, y = Household.Head.Age, f
   theme(legend.position = "none")
 ```
 
-## Household Income Balance
+The following Mann-Whitney U-test shows that there is a statistically significant difference in the median ages of male and female head of households.
+
+```{r test for significant difference between ages of sexes}
+wilcox.test(data.gender$Household.Head.Age~data.gender$Household.Head.Sex)
+```
+
+### Household Income Balance
 
 ```{r balance}
 data.balance <- data %>%
-  select(Total.Household.Income, Total.Food.Expenditure)
+  select(Total.Household.Income, Total.Food.Expenditure) #subsetting data by selecting variables of interest
 ```
+
+The boxplot of household incomes suggests a heavily skewed distribution with many outliers at the upper end of the distribution.
 
 ```{r balance boxplot1}
 ggplot(data.balance, aes(y=Total.Household.Income)) +
@@ -128,6 +174,7 @@ ggplot(data.balance, aes(y=Total.Household.Income)) +
   theme(plot.title=element_text(hjust=0.5)) +
   scale_x_discrete(labels=NULL)
 ```
+The following boxplot shows the log transformed household income and shows there are still several outliers following the transformation. 
 
 ```{r balance boxplot2}
 ggplot(data.balance, aes(y=log(Total.Household.Income))) +
@@ -137,6 +184,8 @@ ggplot(data.balance, aes(y=log(Total.Household.Income))) +
   scale_x_discrete(labels=NULL)
 ```
 
+The scatterplot of household income against total food expenditure suggests a positive correlation but the fitted model may be being heavily influenced by the extreme value of one point.
+
 ```{r balance_plot}
 ggplot(data = data.balance, aes(x = Total.Household.Income, y = Total.Food.Expenditure)) +
   geom_point(color="black", position="jitter", alpha=0.5) +
@@ -145,61 +194,19 @@ ggplot(data = data.balance, aes(x = Total.Household.Income, y = Total.Food.Expen
   theme(legend.position = "none")
 ```
 
-The above plot highlights a possible outlier in terms of income, this could be a data entry error or just an outlier. Removing this observation from the data set and plotting provides the following scatter diagram.
+The above plot highlights a possible outlier in terms of income, this could be a data entry error or just an outlier. Removing this observation from the data set and plotting provides the following scatter diagram. This plot reconfirms the suggested positive correlation, but there is still an imbalance in the amount of data available at different levels of income. For example, most data is available for incomes between 0 and 750000 peso, but far fewer data points occur above this income level.
 
 ```{r balance without outlier}
 index<-which.max(data.balance$Total.Household.Income)
 balance_without_outlier<- data.balance[-index,]
 ggplot(data = balance_without_outlier, aes(x = Total.Household.Income, y = Total.Food.Expenditure)) +
   geom_point(color="black", position="jitter", alpha=0.5) +
-  labs(x = "Income", y = "Expenditure") +
+  labs(x = "Income (Ten Thousand Phillipine Peso", y = "Food Expenditure (Ten Thousand Phillipine Peso") +
   geom_smooth(method = glm, se = FALSE, color="red") +
   theme(legend.position = "none")
 ```
 
-## Model
-
-```{r}
-models <- regsubsets(Total.Number.of.Family.members~., data = data, nvmax = 10)
-summary(models)
-res.sum <- summary(models)
-selection.criteria<- c(Adj.R2 = which.max(res.sum$adjr2), CP = which.min(res.sum$cp),
-  BIC = which.min(res.sum$bic)); selection.criteria
-```
-
-```{r full numerical model}
-model_full <- glm(Total.Number.of.Family.members ~ Total.Household.Income +
-                Total.Food.Expenditure + Household.Head.Age + House.Floor.Area + House.Age +
-                Number.of.bedrooms + Electricity, data = data)
-```
-
-```{r full numerical model summary}
-model_full %>%
-  summary()
-```
-
-```{r significant factors model}
-model_significant <- glm(Total.Number.of.Family.members ~ Total.Household.Income +
-                Total.Food.Expenditure + House.Age +
-                Number.of.bedrooms, data = data)
-```
-
-```{r summary of significant factors model}
-model_significant %>%
-  summary()
-```
-
-```{r model comparison}
-Models <- c('Full Model','Significant Factors Model')
-bind_rows(glance(model_full), glance(model_significant),.id="Model") %>%
-  select(Model,AIC,BIC) %>%
-  mutate(Model=Models) %>%  
-  kable(booktabs = TRUE,digits = 2) %>% 
-  kable_styling(latex_options = 'HOLD_position', ) # to get a table of AIC & BIC
-```
-
-
-## Family Members & Gender
+### Family Members & Head of Household Sex
 ```{r}
 data.sex_number <- data %>%
   select(Household.Head.Sex, Total.Number.of.Family.members)
@@ -208,13 +215,13 @@ data.sex_number <- data %>%
 ```{r}
 ggplot(data = data.sex_number, aes(x = Household.Head.Sex, y = Total.Number.of.Family.members, fill = Household.Head.Sex)) +
   geom_boxplot() +
-  labs(x = "Gender", y = "Number of Family member")+ 
+  labs(x = "Sex of Head of Household", y = "Number of Family Members")+ 
   theme(legend.position = "none")
 ```
 
-Hence we can see that the male household head's number of family members tend to be more then the female's.
+Hence we can see that households with a male head appear to have a greater number of family members than those with a female head, as the male group has larger values for the first and third quartiles and the median. However there is overlap between the two groups central 50% and so the distributions may not be significantly different.
 
-## Log-odds
+#### Log-odds
 ```{r}
 data.sex_number$Household.Head.Sex <- as.factor(data.sex_number$Household.Head.Sex)
 ```
@@ -264,7 +271,7 @@ data.sex_number <- data.sex_number %>%
   mutate(logodds.male = predict(model_sex_number))
 ```
 
-## Odds
+#### Odds
 
 ```{r}
 plot_model(model_sex_number, show.values = TRUE, axis.lim = c(1,1.5),
@@ -279,16 +286,12 @@ data.sex_number <- data.sex_number %>%
   mutate(odds.male = exp(logodds.male))
 ```
 
-
-## Probabilities
+#### Probabilities
 
 ```{r}
 data.sex_number <- data.sex_number %>%
   mutate(probs.male = fitted(model_sex_number))
 ```
-
-
-## Plot the probability of being male
 
 ```{r}
 ggplot(data = data.sex_number, aes(x = Total.Number.of.Family.members, y = probs.male)) +
@@ -300,10 +303,70 @@ ggplot(data = data.sex_number, aes(x = Total.Number.of.Family.members, y = probs
 
 ```{r}
 plot_model(model_sex_number, type = "pred", title = "",
-            axis.title = c("number of family members", "Prob. of household being male"))
+            axis.title = c("number of family members", "Probability of household being male"))
 ```
 
-## GLM
+## Model Exploration
+
+The following code identifies which explanatory variables would be included to produce the best models of different sizes, in this instance the maximum number of variables specified is ten. The output suggests the first predictor to be included is the total food expenditure in Phillipine peso, and the last to be included is the binary variable Electricity that identifies if a household has electricity.
+Comparing each of the ten models produced by BIC, CP and adjusted R^2 criteria is inconclusive as each implies a different model is best.
+
+```{r assessing variables for inclusion}
+models <- regsubsets(Total.Number.of.Family.members~., data = data, nvmax = 10)
+summary(models)
+res.sum <- summary(models)
+selection.criteria<- c(Adj.R2 = which.max(res.sum$adjr2), CP = which.min(res.sum$cp),
+  BIC = which.min(res.sum$bic)); selection.criteria
+```
+
+The following model includes each of the seven numerical explanatory variables.  
+
+```{r full numerical model}
+model_full <- glm(Total.Number.of.Family.members ~ Total.Household.Income +
+                Total.Food.Expenditure + Household.Head.Age + House.Floor.Area + House.Age +
+                Number.of.bedrooms + Electricity, data = data)
+```
+
+The fitted model identifies four significant (at the 5% level) explanatory variables which are:
+- Total Household Income
+- Total Food Expenditure
+- Age of the Building
+- Number of Bedrooms
+
+```{r full numerical model summary}
+model_full%>%
+  summary()
+```
+
+Refitting the model to include the previously identified significant predictors.
+
+```{r significant factors model}
+model_significant<- glm(Total.Number.of.Family.members ~ Total.Household.Income +
+                Total.Food.Expenditure + House.Age +
+                Number.of.bedrooms, data = data)
+```
+
+```{r summary of significant factors model}
+model_significant %>%
+  summary()
+```
+
+Comparing the model with all numerical predictors and the model with the identified significant predictors using the AIC and BIC model selection criteria suggests the model with only the significant predictors is a better fit for the data. Additinally, the latter model results in a decrease of 2280.5 in the deviance with a loss of 4 degrees of freedom, whereas the full numerical model had a reduction in deviance of 2291.1 with a loss of 7 degrees of freedom.
+
+```{r model comparison}
+Models <- c('Full Model','Significant Factors Model')
+bind_rows(glance(model_full), glance(model_significant),.id="Model") %>%
+  select(Model,AIC,BIC) %>%
+  mutate(Model=Models) %>%  
+  kable(booktabs = TRUE,digits = 2) %>% 
+  kable_styling(latex_options = 'HOLD_position', ) # to get a table of AIC & BIC
+```
+
+## Generalised Linear Models
+
+### Binomial Regression Model
+
+The following code assigns the response variable and categorical explanatory variables as factors. Treating each different number of household members as a different level of the response variable allows a binomial model to be fitted with the logit link function. 
 
 ```{r factors}
 data$Total.Number.of.Family.members<-as.factor(data$Total.Number.of.Family.members)
@@ -311,62 +374,64 @@ data$Household.Head.Sex<- as.factor(data$Household.Head.Sex)
 data$Type.of.Household<-as.factor(data$Type.of.Household)
 ```
 
-```{r glm test model}
-test.model<- glm(Total.Number.of.Family.members~ Total.Household.Income +
+The model is fitted to include all explanatory variables, categorical and numerical. This model identifies three statistically significant explanatory variables: Total Household Income (in ten thousand Phillipine Pesos), Total Food Expenditure (in ten thousand Phillipine Pesos) and the Head of Household Sex being male (female is treated as the baseline). For an increase of 10000 peso in the total household income, the number of household members decreases by 0.03557. An increase of 10000 peso in Food Expenditure results in an increase of 1.048 in the number of household members. If the Head of Household is Male it is expected there will be 1.143 more household members than if the Head of the Household is Female.
+
+```{r glm binomial test model}
+bin.test.model<- glm(Total.Number.of.Family.members~ Total.Household.Income +
                 Total.Food.Expenditure + Household.Head.Sex + Household.Head.Age + Type.of.Household + House.Floor.Area + House.Age + Number.of.bedrooms + Electricity, data=data, family = binomial(link = "logit"))
 
-test.model%>% summary()
+bin.test.model%>% summary()
 ```
 
+As the exploratory analysis of the data suggests sex of the head of the household may interact with other variables, the following model is fitted to include these interactions. This model returns six significant predictors at the 5% level however the values of some of these coefficients are relatively small in the context of the data. 
+For an increase of 10000 peso in food expenditure, there is an increase of 0.728 in the number of household members. If the head of the household is male then there is a further expected increase of 0.518 in household members for this same rise in food expenditure.
+A one year increase in the age of the head of the household results in a decrease of 0.036 in the number of household members. However if the head of the household is male then there is an additional increase of 0.042 in the number of household members for every one year older.
+The remaining significant coefficients imply that a 1 square-metre increase in floor area correlates to a 0.006 increase in household members and finally in a male led household with electricity it is expected there will be an additional 1.999 members of the household.
 
-```{r glm sex interactions test model}
-int.test.model<- glm(Total.Number.of.Family.members~ (Total.Household.Income +
+```{r glm binomial sex interactions test model}
+bin.int.test.model<- glm(Total.Number.of.Family.members~ (Total.Household.Income +
                 Total.Food.Expenditure + Household.Head.Age + Type.of.Household + House.Floor.Area + House.Age + Number.of.bedrooms + Electricity)* Household.Head.Sex, data=data, family = binomial(link = "logit"))
 
-int.test.model%>% summary()
+bin.int.test.model%>% summary()
 ```
 
 ```{r model comparison 2}
 Models <- c('No Interactions','Interactions with Head of Household Sex')
-bind_rows(glance(test.model), glance(int.test.model),.id="Model") %>%
+bind_rows(glance(bin.test.model), glance(bin.int.test.model),.id="Model") %>%
   select(Model,AIC,BIC) %>%
   mutate(Model=Models) %>%  
   kable(booktabs = TRUE,digits = 2) %>% 
   kable_styling(latex_options = 'HOLD_position', )
 ```
 
-# Poisson regression model
+### Poisson Regression model
 
-```{r}
-mean(data.score$Total.Number.of.Family.members)
+The response variable of the Total Number of Family Members (or members of the household) can be viewed as a count and therefore a Poisson Regression model is considered. For a Poisson model to be suitable, the mean and variance should be equal and so these assumptions are checked first.
+
+```{r poisson mean and variance check}
+data$Total.Number.of.Family.members<-as.integer(data$Total.Number.of.Family.members)
+members.mean<-mean(data$Total.Number.of.Family.members)
+members.var<-var(data$Total.Number.of.Family.members)
+c(members.mean,members.var)
 ```
 
-```{r}
-var(data.score$Total.Number.of.Family.members)
-```
+The variation of total number of family members is only marginally larger than the mean of total number of family members, thus, the possibility of over-dispersion in our model is not a significant issue.
 
-Since the standard deviation of total number of family members is slightly bigger than the mean of total number of family members, thus, there won't have over-dispesion in our model.
-
-```{r}
+```{r full poisson model}
 model_poisson_full <- glm(Total.Number.of.Family.members ~ Total.Household.Income +
                 Total.Food.Expenditure + Household.Head.Age + House.Floor.Area + House.Age +
-                Number.of.bedrooms + Electricity, family = poisson(link = "log"), data = data.score)
-```
-
-```{r}
+                Number.of.bedrooms + Electricity + Household.Head.Sex + Type.of.Household, family = poisson(link = "log"), data = data)
 model_poisson_full %>%
   summary()
 ```
 
-```{r}
+```{r poisson model with significant variables}
 model_poisson_significant <- glm(Total.Number.of.Family.members ~ Total.Household.Income +
-                Total.Food.Expenditure + House.Age + Number.of.bedrooms, family = poisson(link = "log"), data = data.score)
-```
-
-```{r}
+                Total.Food.Expenditure + Household.Head.Age + House.Age + Household.Head.Sex + Type.of.Household, family = poisson(link = "log"), data = data)
 model_poisson_significant %>%
   summary()
 ```
+
 
 ```{r}
 data$phat <- predict(model_poisson_full, type = "response")
