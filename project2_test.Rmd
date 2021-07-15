@@ -201,7 +201,7 @@ index<-which.max(data.balance$Total.Household.Income)
 balance_without_outlier<- data.balance[-index,]
 ggplot(data = balance_without_outlier, aes(x = Total.Household.Income, y = Total.Food.Expenditure)) +
   geom_point(color="black", position="jitter", alpha=0.5) +
-  labs(x = "Income (Ten Thousand Phillipine Peso", y = "Food Expenditure (Ten Thousand Phillipine Peso") +
+  labs(x = "Income (Ten Thousand Phillipine Pesos)", y = "Food Expenditure (Ten Thousand Phillipine Pesos") +
   geom_smooth(method = glm, se = FALSE, color="red") +
   theme(legend.position = "none")
 ```
