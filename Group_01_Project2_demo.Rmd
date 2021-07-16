@@ -121,3 +121,5 @@ bind_rows(glance(model_poisson_full), glance(model_poisson_significant),.id="Mod
 ```
 
 
+
+
