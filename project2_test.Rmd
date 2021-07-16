@@ -253,7 +253,8 @@ However, we are also interested in producing a 95% confidence interval for these
 
 ```{r confidence interval, eval = TRUE, fig.align='center',out.width='80%', fig.pos = "H"}
 confint(model_sex_number) %>%
-  kable(caption= "Table 3: 95% Confidence Interval for log-odds")
+  kable(caption= "95% Confidence Interval for log-odds")%>%
+  kable_styling(latex_options = "hold_position")
 ```
 
 ```{r plot of model, eval = TRUE, fig.align='center', fig.cap="Log odds of a Male Head of Household", out.width='80%', fig.pos = "H"}
