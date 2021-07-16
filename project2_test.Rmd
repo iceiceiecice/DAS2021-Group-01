@@ -251,9 +251,9 @@ Hence, the log-odds of the household being male increase by 0.18 for every one u
 
 However, we are also interested in producing a 95% confidence interval for these log-odds.
 
-```{r confidence interval, eval = TRUE, fig.align='center',out.width='80%', fig.pos = "H"}
+```{r confidence interval, echo=FALSE}
 confint(model_sex_number) %>%
-  kable(caption= "95% Confidence Interval for log-odds")%>%
+  kable(caption = '95% Confidence Interval for log-odds.',format = "pipe") %>%
   kable_styling(latex_options = "hold_position")
 ```
 
@@ -354,7 +354,7 @@ bind_rows(glance(model_full), glance(model_significant),.id="Model") %>%
   select(Model,AIC,BIC) %>%
   mutate(Model=Models) %>%  
   kable(booktabs = TRUE,digits = 2, caption = "Comparison of Fitted Models by AIC and BIC criteria ") %>% 
-  kable_styling(latex_options = 'HOLD_position', ) # to get a table of AIC & BIC
+  kable_styling(latex_options = 'HOLD_position') # to get a table of AIC & BIC
 ```
 
 ## Generalised Linear Models
@@ -431,7 +431,8 @@ poisson.int[,1]<-poisson.int[,1]
 poisson.int[,3]<-poisson.int[,2]
 poisson.int[,2]<- model_poisson_full$coefficients
 colnames(poisson.int)<- c("Lower Bound","Estimate","Upper Bound"); 
-poisson.int%>% kable(caption = "Estimates and the corresponding 95% Confidence Intervals, with significant predictors highlighted.") %>%
+poisson.int%>%
+  kable(caption = "Estimates and the corresponding 95% Confidence Intervals, with significant predictors highlighted.",format = "pipe") %>%
   kable_styling(position = "center", full_width = FALSE) %>%
   row_spec(c(1,2,3,4,6,9,10), background  = "#A1E8F1", color="black")
 ```
@@ -450,7 +451,8 @@ poisson.sig.int[,1]<-poisson.sig.int[,1]
 poisson.sig.int[,3]<-poisson.sig.int[,2]
 poisson.sig.int[,2]<- model_poisson_significant$coefficients
 colnames(poisson.sig.int)<- c("Lower Bound","Estimate","Upper Bound"); 
-poisson.sig.int%>% kable(caption = "Estimates of regression parameters and the corresponding 95% Confidence Intervals") %>%
+poisson.sig.int%>% 
+  kable(caption = "Estimates of regression parameters and the corresponding 95% Confidence Intervals",format = "pipe") %>%
   kable_styling(position = "center", full_width = FALSE) %>%
   row_spec(c(1,2,3,4,5,6,7), background  = "#A1E8F1", color="black")
 ```
