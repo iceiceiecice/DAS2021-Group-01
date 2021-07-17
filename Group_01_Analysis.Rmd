@@ -1,0 +1,73 @@
+---
+title: "Analysis of the number of people living in a household"
+author: "Group_01"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE, comment = NA)
+```
+
+```{r libraries}
+library(tidyverse)
+library(moderndive)
+library(skimr)
+library(kableExtra)
+library(gridExtra)
+library(dplyr)
+library(ggplot2)
+library(moderndive)
+library(readr)
+library(GGally)
+```
+
+```{r}
+dataset1 <- read_csv("dataset1.csv")
+```
+
+## Introduction
+
+We have a survey from the Philippines. This survey is conducted every three years to provide data on household income and expenditures. Our dataset is from one of the Philippine regions.The purpose of this article is to know which variables related to households affect the number of people living in a household? Therefore, we will analyze 1725 observations.
+
+## Exploratory Data Analysis
+
+We will explore whether nine variables related to households in the dataset have an impact on the number of people living in the house (Total.Number.of.Family.members). These nine variables are Annual household income, Annual expenditure by the household on food, Head of the households sex, Head of the households age, Relationship between the group of people living in the house, Floor area of the house, Age of the building, Number of bedrooms in the house and House electrification situation. 
+
+First let's look at the scatterplot of the response variable versus the numerical variable.
+
+```{r echo=FALSE, out.width= '100%', fig.align = "center"}
+p1= ggplot(dataset1, aes(x = Total.Household.Income,y=Total.Number.of.Family.members)) + 
+  geom_jitter(width = 0.1, color="orange") +
+  labs(x = "Figure 1:Annual household income",y="Number of people living in the house")+
+  theme(axis.title.x = element_text(size = 7), axis.title.y = element_text(size = 7))
+
+p2= ggplot(dataset1, aes(x = Total.Food.Expenditure, y = Total.Number.of.Family.members))+
+  geom_jitter(width = 0.1, color="orange") +
+  labs(x = "Figure 2:Annual expenditure by the household on food",y="Number of people living in the house")+
+  theme(axis.title.x = element_text(size = 6), axis.title.y = element_text(size = 7))
+
+p3= ggplot(dataset1, aes(x = Household.Head.Age, y = Total.Number.of.Family.members)) + 
+  geom_jitter(width = 0.1, color="orange") +
+  labs(x = "Figure 3:Head of the households age(years)",y="Number of people living in the house")+
+  theme(axis.title.x = element_text(size = 7), axis.title.y= element_text(size = 7))
+
+p4= ggplot(dataset1, aes(x = House.Floor.Area, y = Total.Number.of.Family.members)) + 
+  geom_jitter(width = 0.1, color="orange") +
+  labs(x = "Figure 4:Floor area of the house (m2)",y="Number of people living in the house")+
+  theme(axis.title.x = element_text(size = 7), axis.title.y = element_text(size = 7))
+
+p5= ggplot(dataset1, aes(x = House.Age, y = Total.Number.of.Family.members)) + 
+  geom_jitter(width = 0.1, color="orange") +
+  labs(x = "Figure 5:Age of the building(years)",y="Number of people living in the house")+
+  theme(axis.title.x = element_text(size = 7), axis.title.y = element_text(size = 7))
+
+
+grid.arrange(p1, p2,p3,p4,p5, ncol = 3)
+
+```
+
+
+
+
+
+
