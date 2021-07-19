@@ -336,6 +336,7 @@ poisson.int%>% kable(caption = "Estimates and the corresponding 95% Confidence I
   row_spec(c(1,2,3,4,6,9,10), background  = "#A1E8F1", color="black")
 ```
 
+
 We refit the model to include just the previously identified significant covariates and again evaluated the 95% confidence intervals for the estimated parameters, these values can be seen in Table 6. The intercept term of 1.436 is simply a positional constant due to the context of the variables. The negative coefficient of Total Household Income shows that for every additional 10000 peso, the number of household members is expected to decrease by 0.002. The coefficient of Total Food Expenditure suggests that for an increase of 10000 peso in spending, there is an expected 0.048 more members in the household. The coefficients of Head of Household age and the Age of the Building are both negative (-0.003 and -0.002 respectively) showing that an older head of the household or older building is linked to fewer members in a household. A Single Family household is expected to have 0.350 fewer members than the baseline category of an extended family household, and households with a male head will have 0.222 members more than their female counterparts.
 
 ```{r poisson model with significant variables}
@@ -386,7 +387,7 @@ where
  - $\beta_2$ is the coefficient for the second explanatory variable $x_2$;
  - $\beta_3$ is the coefficient for the second explanatory variable $x_3$;
  - $\beta_4$ is the coefficient for the second explanatory variable $x_4$;
- - $\widehat{\beta}_{\mbox{M}}$ i
+ - $\widehat{\beta}_{\mbox{M}}$ is the difference in the mean total number of family members of a male household head relative to the female household head; and
  - $\epsilon_i$ is the $i^{th}$ random error component; and
  - $\mathbb{I}_{\mbox{F}}(i)$ is an indicator function such that
  
