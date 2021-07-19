@@ -35,7 +35,7 @@ library(ggstance)
 data <- read.csv("dataset1.csv")
 data<-data[,-2] #remove region column as all entries the same
 data$Total.Household.Income<-data$Total.Household.Income/(1e4)
-data$Total.Food.Expenditure<-data$Total.Food.Expenditure/(1e4) 
+data$Total.Food.Expenditure<-data$Total.Food.Expenditure/(1e4)
 #scaling the income and expenditure variables to be measured in 10000 Phillipine Pesos to make scales on later plot axes easier to read
 ```
 
@@ -70,6 +70,61 @@ data.score <- data %>%
   dplyr::select(Total.Number.of.Family.members,Total.Household.Income,
                 Total.Food.Expenditure, Household.Head.Age, House.Floor.Area, House.Age,
                 Number.of.bedrooms, Electricity)
+```
+
+Figure 2 shows a graphical visualisation for all the variables in the data set.
+
+```{r all summaries, eval = TRUE, fig.align='center', fig.cap="Graphical Summaries of Variables", out.width='80%', fig.pos = "H"}
+p1<- ggplot(data.score, aes(y=Total.Number.of.Family.members)) +
+  geom_boxplot(color="royalblue1") +
+  labs(x="",y="Total Number of Family Members", title="") +
+  theme(plot.title=element_text(hjust=0.5)) +
+  scale_x_discrete(labels=NULL)
+
+p2<- ggplot(data.score, aes(y=Total.Household.Income)) +
+  geom_boxplot(color="royalblue1") +
+  labs(x="",y="Total Household Income (10000 Peso)", title="") +
+  theme(plot.title=element_text(hjust=0.5)) +
+  scale_x_discrete(labels=NULL)
+
+p3<- ggplot(data.score, aes(y=Total.Food.Expenditure)) +
+  geom_boxplot(color="royalblue1") +
+  labs(x="",y="Total Food Expenditure (10000 Peso)", title="") +
+  theme(plot.title=element_text(hjust=0.5)) +
+  scale_x_discrete(labels=NULL)
+
+p4<-ggplot(data.score, aes(y=Household.Head.Age)) +
+  geom_boxplot(color="royalblue1") +
+  labs(x="",y="Age of Head of Household", title="") +
+  theme(plot.title=element_text(hjust=0.5)) +
+  scale_x_discrete(labels=NULL)
+
+p5<- ggplot(data.score, aes(y=House.Age)) +
+  geom_boxplot(color="royalblue1") +
+  labs(x="",y="Age of the House", title="") +
+  theme(plot.title=element_text(hjust=0.5)) +
+  scale_x_discrete(labels=NULL)
+
+p6<- ggplot(data.score, aes(y=Number.of.bedrooms)) +
+  geom_boxplot(color="royalblue1") +
+  labs(x="",y="Number of Bedrooms", title="") +
+  theme(plot.title=element_text(hjust=0.5)) +
+  scale_x_discrete(labels=NULL)
+
+p7<- ggplot(data = data, aes(x = Type.of.Household)) +
+  geom_bar(stat = "count", position = "dodge") +
+  labs(x = "Type of Household")
+  
+p8<- ggplot(data = data, aes(x = Household.Head.Sex)) +
+  geom_bar(stat = "count", position = "dodge") +
+  labs(x = "Head of Household Sex")
+
+p9<- ggplot(data = data, aes(x = Electricity)) +
+  geom_bar(stat = "count", position = "dodge") +
+  labs(x = "Electricity in Household")+
+  scale_x_discrete(labels=NULL)
+
+grid.arrange(p1, p2, p3, p4, p5, p6, p8, p9, p7, nrow=3)
 ```
 
 Table 1 shows summary data for all the numerical variables.There is no missing data within these variables and so no values will need to be imputed for the analysis in the report.
@@ -119,14 +174,14 @@ table_household<- data.cat %>%
 knitr::kable(list(table_sex, table_household), booktabs = TRUE, valign = 'middle', caption = "Summary of Categorial Explanatory Variables")
 ```
 
-The pairs plot in Figure 2 is colour coded to illustrate any differences between the distributions of the quantitative variables when the head of household sex is included as a factor. The plots suggest the sex of the head of household may impact the number of family members in the household and the age of the head of the household.
+The pairs plot in Figure 3 is colour coded to illustrate any differences between the distributions of the quantitative variables when the head of household sex is included as a factor. The plots suggest the sex of the head of household may impact the number of family members in the household and the age of the head of the household.
 
-```{r pairs, echo=FALSE, out.width= '100%', fig.cap="Paired plots of the variables",fig.align = "center"}
-ggpairs(data.score, aes(colour = as.factor(data$Household.Head.Sex), alpha = 0.4))
-#to get pairs plots.
+```{r pairs, eval = TRUE, fig.align='center',echo=FALSE, out.width= '100%', fig.pos = "H", fig.cap="Pair plots and correlation between numerical variables, colour coded to show the sex of the head of household."}
+pairplot<- ggpairs(data.score, aes(colour = as.factor(data$Household.Head.Sex), alpha = 0.4)) 
+print(pairplot + scale_colour_manual(values=c("skyblue", "blue1"))+ scale_fill_manual(values=c("skyblue", "blue1"))) #to get pairs plots.
 ```
 
-Figure 3 shows that an extended family household or one formed by non-related individuals is more likely to have a female head, whereas a larger proportion of single family households have male heads. 
+Figure 4 shows that an extended family household or one formed by non-related individuals is more likely to have a female head, whereas a larger proportion of single family households have male heads. 
 
 ```{r barplot of sex by type of household, eval = TRUE, fig.align='center', fig.cap="Barplot of household head's sex by type of household", out.width='80%', fig.pos = "H"}
 barplot1<- ggplot(data = data, aes(x = Type.of.Household, group = Household.Head.Sex)) +
@@ -161,7 +216,7 @@ kable(caption = 'Summary statistics on the age of household heads by sex.') %>%
 kable_styling(latex_options = "hold_position"); age.gender
 ```
 
-The boxplot in Figure 4 illustrates the previously summarised data. The boxplot identifies the two oldest male head of households as outliers (shown by the points above the whisker), however within the context of the data and when compared to the ages of female head of household boxplot, these ages do not appear unreasonable or unrealistic.
+The boxplot in Figure 5 illustrates the previously summarised data. The boxplot identifies the two oldest male head of households as outliers (shown by the points above the whisker), however within the context of the data and when compared to the ages of female head of household boxplot, these ages do not appear unreasonable or unrealistic.
 
 ```{r boxplot of age by gender, echo=FALSE, out.width= '80%', fig.cap="Boxplots of Head of Household Age stratified by Sex",fig.align = "center"}
 boxplot1<- ggplot(data = data.gender, aes(x = Household.Head.Sex, y = Household.Head.Age, fill = Household.Head.Sex)) +
@@ -184,7 +239,7 @@ data.balance <- data %>%
   select(Total.Household.Income, Total.Food.Expenditure) #subsetting data by selecting variables of interest
 ```
 
-Figure 5 shows a boxplot of household incomes suggests a heavily skewed distribution with many outliers at the upper end of the distribution.
+Figure 6 shows a boxplot of household incomes suggests a heavily skewed distribution with many outliers at the upper end of the distribution.
 
 ```{r balance boxplot,eval = TRUE, fig.align='center', fig.cap="Household Incomes in 10000 Phillipine Pesos.", out.width='80%', fig.pos = "H"}
 ggplot(data.balance, aes(y=Total.Household.Income)) +
@@ -194,7 +249,7 @@ ggplot(data.balance, aes(y=Total.Household.Income)) +
   scale_x_discrete(labels=NULL)
 ```
 
-The following boxplot in Figure 6 shows the log transformed household income and shows there are still several outliers following the transformation. 
+The following boxplot in Figure 7 shows the log transformed household income and shows there are still several outliers following the transformation. 
 
 ```{r balance boxplot2, eval = TRUE, fig.align='center', fig.cap="Boxplot of log transformed Incomes.", out.width='80%', fig.pos = "H"}
 ggplot(data.balance, aes(y=log(Total.Household.Income))) +
@@ -204,7 +259,7 @@ ggplot(data.balance, aes(y=log(Total.Household.Income))) +
   scale_x_discrete(labels=NULL)
 ```
 
-The scatterplot in Figure 7 of household income against total food expenditure suggests a positive correlation but the fitted model may be being heavily influenced by the extreme values, particularly by one extreme point.
+The scatterplot in Figure 8 of household income against total food expenditure suggests a positive correlation but the fitted model may be being heavily influenced by the extreme values, particularly by one extreme point.
 
 ```{r balance_plot, eval = TRUE, fig.align='center', fig.cap="Scatterplot of Income against Food Expenditure.", out.width='80%', fig.pos = "H"}
 ggplot(data = data.balance, aes(x = Total.Household.Income, y = Total.Food.Expenditure)) +  geom_point(color="royalblue1", position="jitter", alpha=0.5) +
@@ -213,7 +268,7 @@ ggplot(data = data.balance, aes(x = Total.Household.Income, y = Total.Food.Expen
   theme(legend.position = "none", plot.title = element_text(hjust = 0.5))
 ```
 
-Figure 7 again highlights a possible outlier in terms of income, this could be a data entry error or just an outlier at the maximum. Removing this observation from the data set and plotting provides the following scatter diagram in Figure 8. This plot reconfirms the suggested positive correlation, but there is still an imbalance in the amount of data available at different levels of income. For example, most data is available for incomes between 0 and 750000 peso, but far fewer data points occur above this income level.
+Figure 8 again highlights a possible outlier in terms of income, this could be a data entry error or just an outlier at the maximum. Removing this observation from the data set and plotting provides the following scatter diagram in Figure 9. This plot reconfirms the suggested positive correlation, but there is still an imbalance in the amount of data available at different levels of income. For example, most data is available for incomes between 0 and 750000 peso, but far fewer data points occur above this income level.
 
 ```{r balance without outlier, eval = TRUE, fig.align='center', fig.cap="Scatterplot of Income and Food Expenditure with extreme value removed.", out.width='80%', fig.pos = "H"}
 index<-which.max(data.balance$Total.Household.Income)
@@ -240,7 +295,7 @@ boxplot2<-ggplot(data = data.sex_number, aes(x = Household.Head.Sex, y = Total.N
 print(boxplot2 + scale_fill_manual(values=c("lightskyblue1", "blue1")))
 ```
 
-Hence we can see from Figure 9 that households with a male head appear to have a greater number of family members on average than those with a female head, as the male group has larger values for the first and third quartiles and the median. However there is overlap between the two groups central IQR and so the distributions may not be significantly different.
+Hence we can see from Figure 10 that households with a male head appear to have a greater number of family members on average than those with a female head, as the male group has larger values for the first and third quartiles and the median. However there is overlap between the two groups central IQR and so the distributions may not be significantly different.
 
 #### Log-odds
 
