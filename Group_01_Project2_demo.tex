@@ -43,7 +43,11 @@
   pdfcreator={LaTeX via pandoc}}
 \urlstyle{same} % disable monospaced font for URLs
 \usepackage[margin=1in]{geometry}
+<<<<<<< HEAD
 \usepackage{longtable,booktabs}
+=======
+\usepackage{longtable,booktabs,array}
+>>>>>>> a03696bb19740108c0a259d19eac5a7a1d80cdf3
 \usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
 \usepackage{etoolbox}
@@ -132,6 +136,7 @@ The summary below shows the count data for each level of the response
 variable and the percentage of total households in the region in each
 group.
 
+<<<<<<< HEAD
 \begin{verbatim}
  Total.Number.of.Family.members    n percent
                               1  128    7.4%
@@ -164,6 +169,8 @@ data set.
 \caption{Graphical Summaries of Variables}\label{fig:all summaries}
 \end{figure}
 
+=======
+>>>>>>> a03696bb19740108c0a259d19eac5a7a1d80cdf3
 Table 1 shows summary data for all the numerical variables.There is no
 missing data within these variables and so no values will need to be
 imputed for the analysis in the report. The response variable, total
@@ -253,10 +260,17 @@ households formed from non-related individuals. Of the 1725 households,
 less than a quarter (21.4\%) had a female head of household.
 
 \begin{table}
+<<<<<<< HEAD
 \caption{\label{tab:categorical summaries}Summary of Categorial Explanatory Variables}
 
 \centering
 \begin{tabular}[middle]{lrl}
+=======
+
+\caption{\label{tab:categorical summaries}Summary of Categorial Explanatory Variables}
+\centering
+\begin{tabular}[t]{lrl}
+>>>>>>> a03696bb19740108c0a259d19eac5a7a1d80cdf3
 \toprule
 Household.Head.Sex & n & percent\\
 \midrule
@@ -265,8 +279,14 @@ Male & 1356 & 78.6\%\\
 Total & 1725 & 100.0\%\\
 \bottomrule
 \end{tabular}
+<<<<<<< HEAD
 \centering
 \begin{tabular}[middle]{lrl}
+=======
+\end{table}
+
+\begin{tabular}{lrl}
+>>>>>>> a03696bb19740108c0a259d19eac5a7a1d80cdf3
 \toprule
 Type.of.Household & n & percent\\
 \midrule
@@ -276,15 +296,24 @@ Two or More Nonrelated Persons/Members & 8 & 0.5\%\\
 Total & 1725 & 100.0\%\\
 \bottomrule
 \end{tabular}
+<<<<<<< HEAD
 \end{table}
 
 The pairs plot in Figure 3 is colour coded to illustrate any differences
+=======
+
+The pairs plot in Figure 2 is colour coded to illustrate any differences
+>>>>>>> a03696bb19740108c0a259d19eac5a7a1d80cdf3
 between the distributions of the quantitative variables when the head of
 household sex is included as a factor. The plots suggest the sex of the
 head of household may impact the number of family members in the
 household and the age of the head of the household.
 
+<<<<<<< HEAD
 \begin{figure}[H]
+=======
+\begin{figure}
+>>>>>>> a03696bb19740108c0a259d19eac5a7a1d80cdf3
 
 {\centering \includegraphics[width=1\linewidth]{Group_01_Project2_demo_files/figure-latex/pairs-1} 
 
@@ -554,6 +583,7 @@ $Total.Number.of.Family.members
 \caption{Predicted probability of Male Head of Households given Number of Household Members}\label{fig:probability plot 2}
 \end{figure}
 
+<<<<<<< HEAD
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
 \newpage
@@ -733,14 +763,536 @@ with a loss of 7 degrees of freedom.
 \caption{\label{tab:model comparison}Comparison of Fitted Models by AIC and BIC criteria }
 \centering
 \begin{tabular}[t]{lrr}
-\toprule
-Model & AIC & BIC\\
-\midrule
-Full Numerical Model & 7344.72 & 7393.80\\
-Significant Predictors Model & 7340.78 & 7373.49\\
-\bottomrule
+=======
+Figure 3 shows that an extended family household or one formed by
+non-related individuals is more likely to have a female head, whereas a
+larger proportion of single family households have male heads.
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.8\linewidth]{Group_01_Project2_demo_files/figure-latex/barplot of sex by type of household-1} 
+
+}
+
+\caption{Barplot of household head's sex by type of household}\label{fig:barplot of sex by type of household}
+\end{figure}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\newpage
+
+\hypertarget{sec:ARC}{%
+\section{Analysis of Relationships between Covariates}\label{sec:ARC}}
+
+\hypertarget{the-relationship-between-independent-and-dependent-variables}{%
+\subsection{The relationship between independent and dependent
+variables}\label{the-relationship-between-independent-and-dependent-variables}}
+
+We will explore whether nine variables related to households in the
+dataset have an impact on the number of people living in the house
+(Total.Number.of.Family.members). These nine variables are Annual
+household income, Annual expenditure by the household on food, Head of
+the households sex, Head of the households age, Relationship between the
+group of people living in the house, Floor area of the house, Age of the
+building, Number of bedrooms in the house and House electrification
+situation.
+
+First let's look at the scatterplot of the response variable versus the
+numerical variable.
+
+\begin{center}\includegraphics[width=1\linewidth]{Group_01_Project2_demo_files/figure-latex/unnamed-chunk-1-1} \end{center}
+
+\hypertarget{gender-age}{%
+\subsection{Gender \& Age}\label{gender-age}}
+
+As highlighted by the pairs plot, there appears to be a relationship
+between the sex and age of the head of the household.
+
+The minimum and maximum ages of household heads do not appear to differ
+greatly according to the individuals' sex, however they do differ at the
+25th, 50th and 75th percentiles with male heads of households being
+consitently younger than their female counterparts. The standard
+deviation is also greater for the female group, but the substantially
+smaller group size for females may contribute to this larger variation.
+
+\begin{table}[!h]
+
+\caption{\label{tab:summaries of age by sex}Summary statistics on the age of household heads by sex.}
+\centering
+\begin{tabular}[t]{l|r|r|r|r|r|r|r|r}
+\hline
+Household.Head.Sex & n & Mean & St.Dev & Min & Q1 & Median & Q3 & Max\\
+\hline
+Female & 369 & 58.23 & 15.69 & 17 & 47 & 59 & 69 & 99\\
+\hline
+Male & 1356 & 50.59 & 13.74 & 20 & 40 & 49 & 61 & 98\\
+\hline
 \end{tabular}
 \end{table}
+
+The boxplot in Figure 4 illustrates the previously summarised data. The
+boxplot identifies the two oldest male head of households as outliers
+(shown by the points above the whisker), however within the context of
+the data and when compared to the ages of female head of household
+boxplot, these ages do not appear unreasonable or unrealistic.
+
+\begin{figure}
+
+{\centering \includegraphics[width=0.8\linewidth]{Group_01_Project2_demo_files/figure-latex/boxplot of age by gender-1} 
+
+}
+
+\caption{Boxplots of Head of Household Age stratified by Sex}\label{fig:boxplot of age by gender}
+\end{figure}
+
+The following Mann-Whitney U-test shows that there is a statistically
+significant difference in the median ages of male and female head of
+households at a 5\% level.
+
+\begin{verbatim}
+    Wilcoxon rank sum test with continuity correction
+
+data:  data.gender$Household.Head.Age by data.gender$Household.Head.Sex
+W = 324284, p-value < 2.2e-16
+alternative hypothesis: true location shift is not equal to 0
+\end{verbatim}
+
+\hypertarget{household-income-and-food-expenditure}{%
+\subsection{Household Income and Food
+Expenditure}\label{household-income-and-food-expenditure}}
+
+Figure 5 shows a boxplot of household incomes suggests a heavily skewed
+distribution with many outliers at the upper end of the distribution.
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.8\linewidth]{Group_01_Project2_demo_files/figure-latex/balance boxplot-1} 
+
+}
+
+\caption{Household Incomes in 10000 Phillipine Pesos.}\label{fig:balance boxplot}
+\end{figure}
+
+The following boxplot in Figure 6 shows the log transformed household
+income and shows there are still several outliers following the
+transformation.
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.8\linewidth]{Group_01_Project2_demo_files/figure-latex/balance boxplot2-1} 
+
+}
+
+\caption{Boxplot of log transformed Incomes.}\label{fig:balance boxplot2}
+\end{figure}
+
+The scatterplot in Figure 7 of household income against total food
+expenditure suggests a positive correlation but the fitted model may be
+being heavily influenced by the extreme values, particularly by one
+extreme point.
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.8\linewidth]{Group_01_Project2_demo_files/figure-latex/balance_plot-1} 
+
+}
+
+\caption{Scatterplot of Income against Food Expenditure.}\label{fig:balance_plot}
+\end{figure}
+
+Figure 7 again highlights a possible outlier in terms of income, this
+could be a data entry error or just an outlier at the maximum. Removing
+this observation from the data set and plotting provides the following
+scatter diagram in Figure 8. This plot reconfirms the suggested positive
+correlation, but there is still an imbalance in the amount of data
+available at different levels of income. For example, most data is
+available for incomes between 0 and 750000 peso, but far fewer data
+points occur above this income level.
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.8\linewidth]{Group_01_Project2_demo_files/figure-latex/balance without outlier-1} 
+
+}
+
+\caption{Scatterplot of Income and Food Expenditure with extreme value removed.}\label{fig:balance without outlier}
+\end{figure}
+
+\hypertarget{number-of-family-members-head-of-household-sex}{%
+\subsection{Number of Family Members \& Head of Household
+Sex}\label{number-of-family-members-head-of-household-sex}}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.8\linewidth]{Group_01_Project2_demo_files/figure-latex/boxplot of sex and members-1} 
+
+}
+
+\caption{Number of Members in Household by Sex of Head of Household}\label{fig:boxplot of sex and members}
+\end{figure}
+
+Hence we can see from Figure 9 that households with a male head appear
+to have a greater number of family members on average than those with a
+female head, as the male group has larger values for the first and third
+quartiles and the median. However there is overlap between the two
+groups central IQR and so the distributions may not be significantly
+different.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\newpage
+
+\hypertarget{sec:EMA}{%
+\section{Exploratory Model Analysis}\label{sec:EMA}}
+
+\hypertarget{glm-model-exploration}{%
+\subsection{GLM Model Exploration}\label{glm-model-exploration}}
+
+Prior to exploring any models, the outlier for Total Household Income
+and corresponding measurements for the other variables from this
+individual are removed.
+
+The following code identifies which explanatory variables would be
+included to produce the best models of different sizes, in this instance
+the maximum number of variables specified is ten. The output suggests
+the first predictor to be included is the total food expenditure in
+10000 Phillipine pesos, and the last to be included is the binary
+variable Electricity that identifies if a household has electricity.
+Comparing each of the ten models produced by BIC, CP and adjusted R\^{}2
+criteria is inconclusive as each implies a different model is best.
+
+\begin{verbatim}
+Subset selection object
+Call: regsubsets.formula(Total.Number.of.Family.members ~ ., data = data, 
+    nvmax = 10)
+10 Variables  (and intercept)
+                                                        Forced in Forced out
+Total.Household.Income                                      FALSE      FALSE
+Total.Food.Expenditure                                      FALSE      FALSE
+Household.Head.SexMale                                      FALSE      FALSE
+Household.Head.Age                                          FALSE      FALSE
+Type.of.HouseholdSingle Family                              FALSE      FALSE
+Type.of.HouseholdTwo or More Nonrelated Persons/Members     FALSE      FALSE
+House.Floor.Area                                            FALSE      FALSE
+House.Age                                                   FALSE      FALSE
+Number.of.bedrooms                                          FALSE      FALSE
+Electricity                                                 FALSE      FALSE
+1 subsets of each size up to 10
+Selection Algorithm: exhaustive
+          Total.Household.Income Total.Food.Expenditure Household.Head.SexMale
+1  ( 1 )  " "                    "*"                    " "                   
+2  ( 1 )  " "                    "*"                    " "                   
+3  ( 1 )  " "                    "*"                    "*"                   
+4  ( 1 )  "*"                    "*"                    "*"                   
+5  ( 1 )  "*"                    "*"                    "*"                   
+6  ( 1 )  "*"                    "*"                    "*"                   
+7  ( 1 )  "*"                    "*"                    "*"                   
+8  ( 1 )  "*"                    "*"                    "*"                   
+9  ( 1 )  "*"                    "*"                    "*"                   
+10  ( 1 ) "*"                    "*"                    "*"                   
+          Household.Head.Age Type.of.HouseholdSingle Family
+1  ( 1 )  " "                " "                           
+2  ( 1 )  " "                "*"                           
+3  ( 1 )  " "                "*"                           
+4  ( 1 )  " "                "*"                           
+5  ( 1 )  " "                "*"                           
+6  ( 1 )  " "                "*"                           
+7  ( 1 )  "*"                "*"                           
+8  ( 1 )  "*"                "*"                           
+9  ( 1 )  "*"                "*"                           
+10  ( 1 ) "*"                "*"                           
+          Type.of.HouseholdTwo or More Nonrelated Persons/Members
+1  ( 1 )  " "                                                    
+2  ( 1 )  " "                                                    
+3  ( 1 )  " "                                                    
+4  ( 1 )  " "                                                    
+5  ( 1 )  " "                                                    
+6  ( 1 )  " "                                                    
+7  ( 1 )  " "                                                    
+8  ( 1 )  " "                                                    
+9  ( 1 )  "*"                                                    
+10  ( 1 ) "*"                                                    
+          House.Floor.Area House.Age Number.of.bedrooms Electricity
+1  ( 1 )  " "              " "       " "                " "        
+2  ( 1 )  " "              " "       " "                " "        
+3  ( 1 )  " "              " "       " "                " "        
+4  ( 1 )  " "              " "       " "                " "        
+5  ( 1 )  " "              "*"       " "                " "        
+6  ( 1 )  " "              "*"       "*"                " "        
+7  ( 1 )  " "              "*"       "*"                " "        
+8  ( 1 )  "*"              "*"       "*"                " "        
+9  ( 1 )  "*"              "*"       "*"                " "        
+10  ( 1 ) "*"              "*"       "*"                "*"        
+\end{verbatim}
+
+\begin{verbatim}
+Adj.R2     CP    BIC 
+     9      8      6 
+\end{verbatim}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\newpage
+
+\hypertarget{sec:FMA}{%
+\section{Formal Model Analysis}\label{sec:FMA}}
+
+\hypertarget{poisson-regression-model}{%
+\subsection{Poisson Regression model}\label{poisson-regression-model}}
+
+The response variable of the Total Number of Family Members (or members
+of the household) can be viewed as a count and therefore a Poisson
+Regression model is considered. For a Poisson model to be suitable, the
+mean and variance should be equal and so these assumptions are checked
+first.
+
+\begin{table}
+
+\caption{\label{tab:poisson mean and variance check}Mean and Variation of Response Variable}
+\centering
+\begin{tabular}[t]{l|r}
+\hline
+  & \\
+\hline
+Mean & 4.669373\\
+\hline
+Variance & 5.446049\\
+\hline
+\end{tabular}
+\end{table}
+
+The variation of total number of family members is only marginally
+larger than the mean of total number of family members, thus, the
+possibility of over-dispersion in our model is not a significant issue.
+
+\begin{verbatim}
+Call:
+glm(formula = Total.Number.of.Family.members ~ Total.Household.Income + 
+    Total.Food.Expenditure + Household.Head.Age + House.Floor.Area + 
+    House.Age + Number.of.bedrooms + Electricity + Household.Head.Sex + 
+    Type.of.Household, family = poisson(link = "log"), data = data)
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-2.7749  -0.6993  -0.1044   0.4989   3.7501  
+
+Coefficients:
+                                                          Estimate Std. Error
+(Intercept)                                              1.4254422  0.0796515
+Total.Household.Income                                  -0.0022045  0.0006612
+Total.Food.Expenditure                                   0.0500316  0.0035528
+Household.Head.Age                                      -0.0025205  0.0008707
+House.Floor.Area                                        -0.0001932  0.0001281
+House.Age                                               -0.0023168  0.0007735
+Number.of.bedrooms                                      -0.0145830  0.0095600
+Electricity                                              0.0276347  0.0475502
+Household.Head.SexMale                                   0.2202770  0.0297157
+Type.of.HouseholdSingle Family                          -0.3481835  0.0248020
+Type.of.HouseholdTwo or More Nonrelated Persons/Members -0.1444455  0.1598841
+                                                        z value Pr(>|z|)    
+(Intercept)                                              17.896  < 2e-16 ***
+Total.Household.Income                                   -3.334 0.000856 ***
+Total.Food.Expenditure                                   14.082  < 2e-16 ***
+Household.Head.Age                                       -2.895 0.003793 ** 
+House.Floor.Area                                         -1.509 0.131385    
+House.Age                                                -2.995 0.002744 ** 
+Number.of.bedrooms                                       -1.525 0.127155    
+Electricity                                               0.581 0.561126    
+Household.Head.SexMale                                    7.413 1.24e-13 ***
+Type.of.HouseholdSingle Family                          -14.039  < 2e-16 ***
+Type.of.HouseholdTwo or More Nonrelated Persons/Members  -0.903 0.366293    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 2024.3  on 1723  degrees of freedom
+Residual deviance: 1330.4  on 1713  degrees of freedom
+AIC: 7011.6
+
+Number of Fisher Scoring iterations: 4
+\end{verbatim}
+
+The poisson model fitted with all possible covariates concludes there
+are six statistically significant predictors at the 5\% level. These are
+the total household income and food expenditure, the age and gender of
+the head of the household, the age of the house and if it is a single
+family household. Table 5 shows the estimates and the lower and upper
+bounds of the 95\% confidence intervals for the regression parameters.
+The rows containing significant predictors, and so where the confidence
+intervals do not include 0, are highlighted.
+
+\textbackslash begin\{table\}
+
+\textbackslash caption\{\label{tab:table of estimates and confidence intervals}Estimates
+and the corresponding 95\% Confidence Intervals, with significant
+predictors highlighted.\} \centering
+
+\begin{tabular}[t]{l|r|r|r}
+\hline
+  & Lower Bound & Estimate & Upper Bound\\
+\hline
+\cellcolor[HTML]{A1E8F1}{\textcolor{black}{(Intercept)}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{1.2687606}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{1.4254422}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{1.5810043}}\\
+\hline
+\cellcolor[HTML]{A1E8F1}{\textcolor{black}{Total.Household.Income}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{-0.0035110}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{-0.0022045}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{-0.0009192}}\\
+\hline
+\cellcolor[HTML]{A1E8F1}{\textcolor{black}{Total.Food.Expenditure}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{0.0430507}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{0.0500316}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{0.0569775}}\\
+\hline
+\cellcolor[HTML]{A1E8F1}{\textcolor{black}{Household.Head.Age}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{-0.0042279}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{-0.0025205}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{-0.0008148}}\\
+\hline
+House.Floor.Area & -0.0004469 & -0.0001932 & 0.0000552\\
+\hline
+\cellcolor[HTML]{A1E8F1}{\textcolor{black}{House.Age}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{-0.0038392}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{-0.0023168}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{-0.0008069}}\\
+\hline
+Number.of.bedrooms & -0.0333633 & -0.0145830 & 0.0041111\\
+\hline
+Electricity & -0.0644803 & 0.0276347 & 0.1219537\\
+\hline
+\cellcolor[HTML]{A1E8F1}{\textcolor{black}{Household.Head.SexMale}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{0.1623556}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{0.2202770}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{0.2788479}}\\
+\hline
+\cellcolor[HTML]{A1E8F1}{\textcolor{black}{Type.of.HouseholdSingle Family}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{-0.3967514}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{-0.3481835}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{-0.2995260}}\\
+\hline
+Type.of.HouseholdTwo or More Nonrelated Persons/Members & -0.4743426 & -0.1444455 & 0.1540719\\
+\hline
+\end{tabular}
+
+\textbackslash end\{table\}
+
+We refit the model to include just the previously identified significant
+covariates and again evaluated the 95\% confidence intervals for the
+estimated parameters, these values can be seen in Table 6. The intercept
+term of 1.436 is simply a positional constant due to the context of the
+variables. The negative coefficient of Total Household Income shows that
+for every additional 10000 peso, the number of household members is
+expected to decrease by 0.002. The coefficient of Total Food Expenditure
+suggests that for an increase of 10000 peso in spending, there is an
+expected 0.048 more members in the household. The coefficients of Head
+of Household age and the Age of the Building are both negative (-0.003
+and -0.002 respectively) showing that an older head of the household or
+older building is linked to fewer members in a household. A Single
+Family household is expected to have 0.350 fewer members than the
+baseline category of an extended family household, and households with a
+male head will have 0.222 members more than their female counterparts.
+
+\begin{verbatim}
+Call:
+glm(formula = Total.Number.of.Family.members ~ Total.Household.Income + 
+    Total.Food.Expenditure + Household.Head.Age + House.Age + 
+    Household.Head.Sex + Type.of.Household, family = poisson(link = "log"), 
+    data = data)
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-2.7325  -0.7095  -0.1012   0.5090   3.7690  
+
+Coefficients:
+                                                          Estimate Std. Error
+(Intercept)                                              1.4313832  0.0672809
+Total.Household.Income                                  -0.0028211  0.0006146
+Total.Food.Expenditure                                   0.0503772  0.0035264
+Household.Head.Age                                      -0.0027721  0.0008627
+House.Age                                               -0.0024807  0.0007682
+Household.Head.SexMale                                   0.2205681  0.0297155
+Type.of.HouseholdSingle Family                          -0.3484617  0.0247448
+Type.of.HouseholdTwo or More Nonrelated Persons/Members -0.1365104  0.1598583
+                                                        z value Pr(>|z|)    
+(Intercept)                                              21.275  < 2e-16 ***
+Total.Household.Income                                   -4.590 4.44e-06 ***
+Total.Food.Expenditure                                   14.286  < 2e-16 ***
+Household.Head.Age                                       -3.213  0.00131 ** 
+House.Age                                                -3.229  0.00124 ** 
+Household.Head.SexMale                                    7.423 1.15e-13 ***
+Type.of.HouseholdSingle Family                          -14.082  < 2e-16 ***
+Type.of.HouseholdTwo or More Nonrelated Persons/Members  -0.854  0.39313    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 2024.3  on 1723  degrees of freedom
+Residual deviance: 1336.7  on 1716  degrees of freedom
+AIC: 7012
+
+Number of Fisher Scoring iterations: 4
+\end{verbatim}
+
+\textbackslash begin\{table\}
+
+\textbackslash caption\{\label{tab:table of estimates and confidence intervals sig}Estimates
+of regression parameters and the corresponding 95\% Confidence
+Intervals\} \centering
+
+\begin{tabular}[t]{l|r|r|r}
+\hline
+  & Lower Bound & Estimate & Upper Bound\\
+\hline
+\cellcolor[HTML]{A1E8F1}{\textcolor{black}{(Intercept)}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{1.2992842}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{1.4313832}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{1.5630233}}\\
+\hline
+\cellcolor[HTML]{A1E8F1}{\textcolor{black}{Total.Household.Income}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{-0.0040352}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{-0.0028211}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{-0.0016258}}\\
+\hline
+\cellcolor[HTML]{A1E8F1}{\textcolor{black}{Total.Food.Expenditure}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{0.0434480}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{0.0503772}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{0.0572714}}\\
+\hline
+\cellcolor[HTML]{A1E8F1}{\textcolor{black}{Household.Head.Age}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{-0.0044639}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{-0.0027721}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{-0.0010820}}\\
+\hline
+\cellcolor[HTML]{A1E8F1}{\textcolor{black}{House.Age}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{-0.0039924}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{-0.0024807}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{-0.0009811}}\\
+\hline
+\cellcolor[HTML]{A1E8F1}{\textcolor{black}{Household.Head.SexMale}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{0.1626469}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{0.2205681}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{0.2791383}}\\
+\hline
+\cellcolor[HTML]{A1E8F1}{\textcolor{black}{Type.of.HouseholdSingle Family}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{-0.3969151}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{-0.3484617}} & \cellcolor[HTML]{A1E8F1}{\textcolor{black}{-0.2999140}}\\
+\hline
+Type.of.HouseholdTwo or More Nonrelated Persons/Members & -0.4663624 & -0.1365104 & 0.1619512\\
+\hline
+\end{tabular}
+
+\textbackslash end\{table\}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.8\linewidth]{Group_01_Project2_demo_files/figure-latex/summary plot-1} 
+
+}
+
+\caption{Summary of Coefficients for each fitted Poisson Model}\label{fig:summary plot}
+\end{figure}
+
+\begin{longtable}[]{@{}lrr@{}}
+\caption{Comparison of Fitted Poisson Models}\tabularnewline
+\toprule
+Model & AIC & BIC \\
+\midrule
+\endfirsthead
+>>>>>>> a03696bb19740108c0a259d19eac5a7a1d80cdf3
+\toprule
+Model & AIC & BIC \\
+\midrule
+<<<<<<< HEAD
+Full Numerical Model & 7344.72 & 7393.80\\
+Significant Predictors Model & 7340.78 & 7373.49\\
+=======
+\endhead
+Full Model & 7011.64 & 7071.61 \\
+Significant Factors Model & 7012.00 & 7055.62 \\
+>>>>>>> a03696bb19740108c0a259d19eac5a7a1d80cdf3
+\bottomrule
+\end{longtable}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.8\linewidth]{Group_01_Project2_demo_files/figure-latex/pred plot-1} 
+
+}
+
+\caption{Predicted Numbers of Household Members}\label{fig:pred plot}
+\end{figure}
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.8\linewidth]{Group_01_Project2_demo_files/figure-latex/compare plot-1} 
+
+}
+
+\caption{Predicted Numbers of Household Members}\label{fig:compare plot}
+\end{figure}
 
 \hypertarget{binomial-model}{%
 \subsubsection{Binomial Model}\label{binomial-model}}

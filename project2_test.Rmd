@@ -485,7 +485,109 @@ grid.arrange(ssp2,ssp1,ncol=1)
 
 
 
+backup:
 
+# Exploratory Model Analysis {#sec:EMA}
+
+## GLM Model Exploration
+
+Prior to exploring any models, the outlier for Total Household Income and corresponding measurements for the other variables from this individual are removed. 
+
+```{r removing outlier}
+data<-data[-index,]
+```
+
+The following code identifies which explanatory variables would be included to produce the best models of different sizes, in this instance the maximum number of variables specified is ten. The output suggests the first predictor to be included is the total food expenditure in 10000 Phillipine pesos, and the last to be included is the binary variable Electricity that identifies if a household has electricity.
+Comparing each of the ten models produced by BIC, CP and adjusted R^2 criteria is inconclusive as each implies a different model is best.
+
+```{r assessing variables for inclusion}
+models <- regsubsets(Total.Number.of.Family.members~., data = data, nvmax = 10)
+summary(models)
+res.sum <- summary(models)
+selection.criteria<- c(Adj.R2 = which.max(res.sum$adjr2), CP = which.min(res.sum$cp),
+  BIC = which.min(res.sum$bic)); selection.criteria
+```
+
+### Gaussian Model
+The following model includes each of the seven numerical explanatory variables.  
+
+```{r full numerical model}
+model_full <- glm(Total.Number.of.Family.members ~ Total.Household.Income +
+                Total.Food.Expenditure + Household.Head.Age + House.Floor.Area + House.Age + Number.of.bedrooms + Electricity, data = data)
+model_full%>%
+  summary()
+```
+
+The fitted model identifies four significant (at the 5% level) explanatory variables which are:
+ - Total Household Income
+ - Total Food Expenditure
+ - Age of the Building
+ - Number of Bedrooms
+
+Refitting the model to include the previously identified significant predictors.
+
+```{r significant numerical factors model}
+model_significant<- glm(Total.Number.of.Family.members ~ Total.Household.Income +
+                Total.Food.Expenditure + House.Age +
+                Number.of.bedrooms, data = data)
+model_significant %>%
+  summary()
+```
+
+Comparing the model with all numerical predictors and the model with the identified significant predictors using the AIC and BIC model selection criteria suggests the model with only the significant predictors is a better fit for the data. Additionally, the latter model results in a decrease of 2299.8 in the deviance with a loss of 4 degrees of freedom, whereas the full numerical model had a reduction in deviance of 2308.2 with a loss of 7 degrees of freedom.
+
+```{r model comparison}
+Models <- c('Full Numerical Model','Significant Predictors Model')
+bind_rows(glance(model_full), glance(model_significant),.id="Model") %>%
+  select(Model,AIC,BIC) %>%
+  mutate(Model=Models) %>%  
+  kable(booktabs = TRUE,digits = 2, caption = "Comparison of Fitted Models by AIC and BIC criteria ") %>% 
+  kable_styling(latex_options = 'HOLD_position', ) # to get a table of AIC & BIC
+```
+
+### Binomial Model
+
+The following code assigns the response variable and categorical explanatory variables as factors. Treating each different number of household members as a different level of the response variable allows a binomial model to be fitted with the logit link function. 
+
+```{r factors, eval = TRUE}
+data$Total.Number.of.Family.members<-as.factor(data$Total.Number.of.Family.members)
+data$Household.Head.Sex<- as.factor(data$Household.Head.Sex)
+data$Type.of.Household<-as.factor(data$Type.of.Household)
+```
+
+The model is fitted to include all explanatory variables, categorical and numerical. This model identifies three statistically significant explanatory variables: Total Household Income (in ten thousand Philippine Pesos), Total Food Expenditure (in ten thousand Phillipine Pesos) and the Head of Household Sex being male (female is treated as the baseline). For an increase of 10000 peso in the total household income, the number of household members decreases by 0.03557. An increase of 10000 peso in Food Expenditure results in an increase of 1.048 in the number of household members. If the Head of Household is Male it is expected there will be 1.143 more household members than if the Head of the Household is Female.
+
+```{r glm binomial test model}
+bin.test.model<- glm(Total.Number.of.Family.members~ Total.Household.Income +
+                Total.Food.Expenditure + Household.Head.Sex + Household.Head.Age + Type.of.Household + House.Floor.Area + House.Age + Number.of.bedrooms + Electricity, data=data, family = binomial(link = "logit"))
+
+bin.test.model%>% summary()
+
+```
+
+As the exploratory analysis of the data suggests sex of the head of the household may interact with other variables, the following model is fitted to include these interactions. This model returns six significant predictors at the 5% level however the values of some of these coefficients are relatively small in the context of the data. 
+For an increase of 10000 peso in food expenditure, there is an increase of 0.728 in the number of household members. If the head of the household is male then there is a further expected increase of 0.518 in household members for this same rise in food expenditure.
+A one year increase in the age of the head of the household results in a decrease of 0.036 in the number of household members. However if the head of the household is male then there is an additional increase of 0.042 in the number of household members for every one year older.
+The remaining significant coefficients imply that a 1 square-metre increase in floor area correlates to a 0.006 increase in household members and finally in a male led household with electricity it is expected there will be an additional 1.999 members of the household.
+
+```{r glm binomial sex interactions test model}
+bin.int.test.model<- glm(Total.Number.of.Family.members~ (Total.Household.Income +
+                Total.Food.Expenditure + Household.Head.Age + Type.of.Household + House.Floor.Area + House.Age + Number.of.bedrooms + Electricity)* Household.Head.Sex, data=data, family = binomial(link = "logit"))
+
+bin.int.test.model%>% summary()
+```
+
+```{r binomial glm model comparison }
+Models <- c('No Interactions','Interactions with Head of Household Sex')
+bind_rows(glance(bin.test.model), glance(bin.int.test.model),.id="Model") %>%
+  select(Model,AIC,BIC) %>%
+  mutate(Model=Models) %>%  
+  kable(booktabs = TRUE,digits = 2, caption = "Binomial GLM Model Comparison by AIC and BIC") %>% 
+  kable_styling(latex_options = 'HOLD_position', )
+```
+
+***
+\newpage
 
 
 
