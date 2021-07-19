@@ -68,56 +68,56 @@ data.score <- data %>%
 Figure 2 shows a graphical visualisation for all the variables in the data set.
 
 ```{r all summaries, eval = TRUE, fig.align='center', fig.cap="Graphical Summaries of Variables", out.width='80%', fig.pos = "H"}
-p1<- ggplot(data.score, aes(y=Total.Number.of.Family.members)) +
+pp1<- ggplot(data.score, aes(y=Total.Number.of.Family.members)) +
   geom_boxplot(color="royalblue1") +
   labs(x="",y="Total Number of Family Members", title="") +
   theme(plot.title=element_text(hjust=0.5)) +
   scale_x_discrete(labels=NULL)
 
-p2<- ggplot(data.score, aes(y=Total.Household.Income)) +
+pp2<- ggplot(data.score, aes(y=Total.Household.Income)) +
   geom_boxplot(color="royalblue1") +
   labs(x="",y="Total Household Income (10000 Peso)", title="") +
   theme(plot.title=element_text(hjust=0.5)) +
   scale_x_discrete(labels=NULL)
 
-p3<- ggplot(data.score, aes(y=Total.Food.Expenditure)) +
+pp3<- ggplot(data.score, aes(y=Total.Food.Expenditure)) +
   geom_boxplot(color="royalblue1") +
   labs(x="",y="Total Food Expenditure (10000 Peso)", title="") +
   theme(plot.title=element_text(hjust=0.5)) +
   scale_x_discrete(labels=NULL)
 
-p4<-ggplot(data.score, aes(y=Household.Head.Age)) +
+pp4<-ggplot(data.score, aes(y=Household.Head.Age)) +
   geom_boxplot(color="royalblue1") +
   labs(x="",y="Age of Head of Household", title="") +
   theme(plot.title=element_text(hjust=0.5)) +
   scale_x_discrete(labels=NULL)
 
-p5<- ggplot(data.score, aes(y=House.Age)) +
+pp5<- ggplot(data.score, aes(y=House.Age)) +
   geom_boxplot(color="royalblue1") +
   labs(x="",y="Age of the House", title="") +
   theme(plot.title=element_text(hjust=0.5)) +
   scale_x_discrete(labels=NULL)
 
-p6<- ggplot(data.score, aes(y=Number.of.bedrooms)) +
+pp6<- ggplot(data.score, aes(y=Number.of.bedrooms)) +
   geom_boxplot(color="royalblue1") +
   labs(x="",y="Number of Bedrooms", title="") +
   theme(plot.title=element_text(hjust=0.5)) +
   scale_x_discrete(labels=NULL)
 
-p7<- ggplot(data = data, aes(x = Type.of.Household)) +
+pp7<- ggplot(data = data, aes(x = Type.of.Household)) +
   geom_bar(stat = "count", position = "dodge") +
   labs(x = "Type of Household")
   
-p8<- ggplot(data = data, aes(x = Household.Head.Sex)) +
+pp8<- ggplot(data = data, aes(x = Household.Head.Sex)) +
   geom_bar(stat = "count", position = "dodge") +
   labs(x = "Head of Household Sex")
 
-p9<- ggplot(data = data, aes(x = Electricity)) +
+pp9<- ggplot(data = data, aes(x = Electricity)) +
   geom_bar(stat = "count", position = "dodge") +
   labs(x = "Electricity in Household")+
   scale_x_discrete(labels=NULL)
 
-grid.arrange(p1, p2, p3, p4, p5, p6, p8, p9, p7, nrow=3)
+grid.arrange(pp1, pp2, pp3, pp4, pp5, pp6, pp8, pp9, pp7, nrow=3)
 ```
 
 Table 1 shows summary data for all the numerical variables.There is no missing data within these variables and so no values will need to be imputed for the analysis in the report.
