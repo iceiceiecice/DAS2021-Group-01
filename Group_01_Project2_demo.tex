@@ -234,7 +234,7 @@ Total & 1725 & 100.0\%\\
 \end{tabular}
 \end{table}
 
-\begin{tabular}{lrl}
+\begin{tabular}{ccc}
 \toprule
 Type.of.Household & n & percent\\
 \midrule
@@ -258,19 +258,6 @@ household and the age of the head of the household.
 }
 
 \caption{Paired plots of the variables}\label{fig:pairs}
-\end{figure}
-
-Figure 3 shows that an extended family household or one formed by
-non-related individuals is more likely to have a female head, whereas a
-larger proportion of single family households have male heads.
-
-\begin{figure}[H]
-
-{\centering \includegraphics[width=0.8\linewidth]{Group_01_Project2_demo_files/figure-latex/barplot of sex by type of household-1} 
-
-}
-
-\caption{Barplot of household head's sex by type of household}\label{fig:barplot of sex by type of household}
 \end{figure}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
@@ -434,6 +421,19 @@ quartiles and the median. However there is overlap between the two
 groups central IQR and so the distributions may not be significantly
 different.
 
+Figure 9 shows that an extended family household or one formed by
+non-related individuals is more likely to have a female head, whereas a
+larger proportion of single family households have male heads.
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.8\linewidth]{Group_01_Project2_demo_files/figure-latex/barplot of sex by type of household-1} 
+
+}
+
+\caption{Barplot of household head's sex by type of household}\label{fig:barplot of sex by type of household}
+\end{figure}
+
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
 \newpage
@@ -557,9 +557,10 @@ Variance & 5.446049\\
 \end{tabular}
 \end{table}
 
-The variation of total number of family members is only marginally
-larger than the mean of total number of family members, thus, the
-possibility of over-dispersion in our model is not a significant issue.
+From the table 5, The variation of total number of family members is
+only marginally larger than the mean of total number of family members,
+thus, the possibility of over-dispersion in our model is not a
+significant issue.
 
 \begin{verbatim}
 Call:
@@ -766,6 +767,59 @@ Significant Factors Model & 7012.00 & 7055.62 \\
 \bottomrule
 \end{longtable}
 
+From table8, we got the AIC value of two model do not have significant
+differemt, however, the BIC value of significant factors model is lower
+than the full model. Thus, we decided to choose the significant factors
+model.
+
+The poisson regression model that will be fitted to the data is as
+follows:
+\[log(\tilde{\lambda_i}) = \alpha + \beta_1 x_{1i} + \beta_2 x_{2i} + \beta_3 x_{3i} + \beta_4 x_{4i} + \widehat{\beta}_{\mbox{M}} \cdot \mathbb{I}_{\mbox{M}}(i) + \epsilon_i, ~~~~ \epsilon \sim N(0, \sigma^2),\]
+where
+
+\begin{itemize}
+\tightlist
+\item
+  \(log(\tilde{\lambda})\) is the Total Number of Family Members of the
+  \(i^{th}\) individual;
+\item
+  \(x_1\) is the Total Household Income in pesos;
+\item
+  \(x_2\) is the Total Food Expenditure in pesos;
+\item
+  \(x_3\) is the Household Head's Age in years;
+\item
+  \(x_4\) is the House's Age in years;
+\item
+  \(\alpha\) is the intercept and positions the best-fitting plane in 3D
+  space;
+\item
+  \(\beta_1\) is the coefficient for the first explanatory variable
+  \(x_1\);
+\item
+  \(\beta_2\) is the coefficient for the second explanatory variable
+  \(x_2\);
+\item
+  \(\beta_3\) is the coefficient for the second explanatory variable
+  \(x_3\);
+\item
+  \(\beta_4\) is the coefficient for the second explanatory variable
+  \(x_4\);
+\item
+  \(\widehat{\beta}_{\mbox{M}}\) i
+\item
+  \(\epsilon_i\) is the \(i^{th}\) random error component; and
+\item
+  \(\mathbb{I}_{\mbox{F}}(i)\) is an indicator function such that
+\end{itemize}
+
+\[\mathbb{I}_{\mbox{M}}(i)=\left\{
+\begin{array}{ll}
+1 ~~~ \mbox{if the household head of} ~ i \mbox{th observation is Male},\\
+0 ~~~ \mbox{Otherwise}.\\
+\end{array}
+\right.\]
+
 \begin{figure}[H]
 
 {\centering \includegraphics[width=0.8\linewidth]{Group_01_Project2_demo_files/figure-latex/pred plot-1} 
@@ -781,7 +835,14 @@ Significant Factors Model & 7012.00 & 7055.62 \\
 
 }
 
-\caption{Predicted Numbers of Household Members}\label{fig:compare plot}
+\caption{Scatterplot Numbers of Household Members and number of family members}\label{fig:compare plot}
 \end{figure}
+
+\hypertarget{sec:Conc}{%
+\section{Conclusions}\label{sec:Conc}}
+
+In conclusion,
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
 \end{document}

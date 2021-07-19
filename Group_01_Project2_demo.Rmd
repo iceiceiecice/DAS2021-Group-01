@@ -3,7 +3,7 @@ title: "Group_01_Project2_demo"
 author: "Group_01"
 output:
   pdf_document:
-    latex_engine: xelatex
+    latex_engine: pdflatex
     number_sections: no
     keep_tex: true
   html_document:
@@ -110,7 +110,7 @@ table_household<- data.cat %>%
   adorn_totals("row") %>%
   adorn_pct_formatting(); 
 knitr::kable(table_sex, booktabs = TRUE, caption = "Summary of Categorial Explanatory Variables")
-knitr::kable(table_household, booktabs = TRUE)
+knitr::kable(table_household, booktabs = TRUE, align = "c")
 ```
 
 The pairs plot in Figure 2 is colour coded to illustrate any differences between the distributions of the quantitative variables when the head of household sex is included as a factor. The plots suggest the sex of the head of household may impact the number of family members in the household and the age of the head of the household.
@@ -120,14 +120,6 @@ ggpairs(data.score, aes(colour = as.factor(data$Household.Head.Sex), alpha = 0.4
 #to get pairs plots.
 ```
 
-Figure 3 shows that an extended family household or one formed by non-related individuals is more likely to have a female head, whereas a larger proportion of single family households have male heads. 
-
-```{r barplot of sex by type of household, eval = TRUE, fig.align='center', fig.cap="Barplot of household head's sex by type of household", out.width='80%', fig.pos = "H"}
-barplot1<- ggplot(data = data, aes(x = Type.of.Household, group = Household.Head.Sex)) +
-  geom_bar(aes(y = ..prop.., fill = Household.Head.Sex), stat = "count", position = "dodge") +
-  labs(x = "Type of Household", y = "Proportion")
-print(barplot1 + scale_fill_manual(values=c("lightskyblue1", "blue1")))
-```
 
 ***
 \newpage
@@ -267,6 +259,16 @@ print(boxplot2 + scale_fill_manual(values=c("lightskyblue1", "blue1")))
 Hence we can see from Figure 9 that households with a male head appear to have a greater number of family members on average than those with a female head, as the male group has larger values for the first and third quartiles and the median. However there is overlap between the two groups central IQR and so the distributions may not be significantly different.
 
 
+Figure 9 shows that an extended family household or one formed by non-related individuals is more likely to have a female head, whereas a larger proportion of single family households have male heads. 
+
+```{r barplot of sex by type of household, eval = TRUE, fig.align='center', fig.cap="Barplot of household head's sex by type of household", out.width='80%', fig.pos = "H"}
+barplot1<- ggplot(data = data, aes(x = Type.of.Household, group = Household.Head.Sex)) +
+  geom_bar(aes(y = ..prop.., fill = Household.Head.Sex), stat = "count", position = "dodge") +
+  labs(x = "Type of Household", y = "Proportion")
+print(barplot1 + scale_fill_manual(values=c("lightskyblue1", "blue1")))
+```
+
+
 ***
 \newpage
 
@@ -295,6 +297,7 @@ selection.criteria<- c(Adj.R2 = which.max(res.sum$adjr2), CP = which.min(res.sum
 ***
 \newpage
 
+
 # Formal Model Analysis {#sec:FMA}
 
 ## Poisson Regression model
@@ -308,7 +311,8 @@ members.var<-var(data$Total.Number.of.Family.members)
 meanandvar<- c(members.mean,members.var)
 names(meanandvar)<-c("Mean", "Variance"); meanandvar%>%kable(col.names = "", caption="Mean and Variation of Response Variable")
 ```
-The variation of total number of family members is only marginally larger than the mean of total number of family members, thus, the possibility of over-dispersion in our model is not a significant issue.
+
+From the table 5, The variation of total number of family members is only marginally larger than the mean of total number of family members, thus, the possibility of over-dispersion in our model is not a significant issue.
 
 ```{r full poisson model}
 model_poisson_full <- glm(Total.Number.of.Family.members ~ Total.Household.Income +
@@ -328,7 +332,7 @@ poisson.int[,3]<-poisson.int[,2]
 poisson.int[,2]<- model_poisson_full$coefficients
 colnames(poisson.int)<- c("Lower Bound","Estimate","Upper Bound"); 
 poisson.int%>% kable(caption = "Estimates and the corresponding 95% Confidence Intervals, with significant predictors highlighted.") %>%
-  kable_styling(position = "center", full_width = FALSE) %>%
+  kable_styling(full_width = FALSE) %>%
   row_spec(c(1,2,3,4,6,9,10), background  = "#A1E8F1", color="black")
 ```
 
@@ -347,7 +351,7 @@ poisson.sig.int[,3]<-poisson.sig.int[,2]
 poisson.sig.int[,2]<- model_poisson_significant$coefficients
 colnames(poisson.sig.int)<- c("Lower Bound","Estimate","Upper Bound"); 
 poisson.sig.int%>% kable(caption = "Estimates of regression parameters and the corresponding 95% Confidence Intervals") %>%
-  kable_styling(position = "center", full_width = FALSE) %>%
+  kable_styling(full_width = FALSE) %>%
   row_spec(c(1,2,3,4,5,6,7), background = "#A1E8F1", color="black")
 ```
 
@@ -366,6 +370,34 @@ bind_rows(glance(model_poisson_full), glance(model_poisson_significant),.id="Mod
   kable_styling(latex_options = 'HOLD_position', ) # to get a table of AIC & BIC
 ```
 
+From table8, we got the AIC value of two model do not have significant differemt, however, the BIC value of significant factors model is lower than the full model. Thus, we decided to choose the significant factors model.
+
+The poisson regression model that will be fitted to the data is as follows:
+$$log(\tilde{\lambda_i}) = \alpha + \beta_1 x_{1i} + \beta_2 x_{2i} + \beta_3 x_{3i} + \beta_4 x_{4i} + \widehat{\beta}_{\mbox{M}} \cdot \mathbb{I}_{\mbox{M}}(i) + \epsilon_i, ~~~~ \epsilon \sim N(0, \sigma^2),$$
+where
+
+ - $log(\tilde{\lambda})$ is the Total Number of Family Members of the $i^{th}$ individual;
+ - $x_1$ is the Total Household Income in pesos;
+ - $x_2$ is the Total Food Expenditure in pesos;
+ - $x_3$ is the Household Head's Age in years;
+ - $x_4$ is the House's Age in years;
+ - $\alpha$ is the intercept and positions the best-fitting plane in 3D space;
+ - $\beta_1$ is the coefficient for the first explanatory variable $x_1$;
+ - $\beta_2$ is the coefficient for the second explanatory variable $x_2$;
+ - $\beta_3$ is the coefficient for the second explanatory variable $x_3$;
+ - $\beta_4$ is the coefficient for the second explanatory variable $x_4$;
+ - $\widehat{\beta}_{\mbox{M}}$ i
+ - $\epsilon_i$ is the $i^{th}$ random error component; and
+ - $\mathbb{I}_{\mbox{F}}(i)$ is an indicator function such that
+ 
+$$\mathbb{I}_{\mbox{M}}(i)=\left\{
+\begin{array}{ll}
+1 ~~~ \mbox{if the household head of} ~ i \mbox{th observation is Male},\\
+0 ~~~ \mbox{Otherwise}.\\
+\end{array}
+\right.$$
+
+
 ```{r pred plot, eval = TRUE, fig.align='center', fig.cap="Predicted Numbers of Household Members", out.width='80%', fig.pos = "H"}
 data$phat <- predict(model_poisson_full, type = "response")
 pred.plot<- ggplot(data, aes(x = Total.Food.Expenditure, y = phat, colour = Household.Head.Sex)) +
@@ -375,14 +407,17 @@ pred.plot<- ggplot(data, aes(x = Total.Food.Expenditure, y = phat, colour = Hous
 print(pred.plot + scale_colour_manual(values=c("lightskyblue", "blue")))
 ```
 
-```{r compare plot, eval = TRUE, fig.align='center', fig.cap="Predicted Numbers of Household Members", out.width='80%', fig.pos = "H"}
+```{r compare plot, eval = TRUE, fig.align='center', fig.cap="Scatterplot Numbers of Household Members and number of family members", out.width='80%', fig.pos = "H"}
 ggplot(data, aes(x = Total.Food.Expenditure, y = Total.Number.of.Family.members, colour = Household.Head.Sex)) +
   geom_point(aes(y = Total.Number.of.Family.members), position = position_jitter(h = 0.15)) +
   geom_smooth(method = glm, se = FALSE) +
-  labs(x = "Total Food Expenditure (10000 pesos)", y = "Expected Number of Family Members")
+  labs(x = "Total Food Expenditure (10000 pesos)", y = "Number of Family Members")
 ```
 
 
+# Conclusions {#sec:Conc}
+
+In conclusion, 
 
 
-
+***
