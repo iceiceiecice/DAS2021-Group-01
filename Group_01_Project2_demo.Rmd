@@ -378,8 +378,8 @@ Prior to exploring any models, the outlier for Total Household Income and corres
 data<-data[-index,]
 ```
 
-The following code identifies which explanatory variables would be included to produce the best models of different sizes, in this instance the maximum number of variables specified is ten. The output suggests the first predictor to be included is the total food expenditure in 10000 Phillipine pesos, and the last to be included is the binary variable Electricity that identifies if a household has electricity.
-Comparing each of the ten models produced by BIC, CP and adjusted R^2 criteria is inconclusive as each implies a different model is best.
+The following code identifies which explanatory variables would be included to produce the best models of different sizes, in this instance the maximum number of variables specified is ten. The output suggests the first predictor to be included is the total food expenditure in 10000 Philippine pesos, and the last to be included is the binary variable Electricity that identifies if a household has electricity.
+Comparing each of the ten models produced by BIC, CP and adjusted R^2 selection criteria is inconclusive as each implies a different model is best.
 
 ```{r assessing variables for inclusion}
 models <- regsubsets(Total.Number.of.Family.members~., data = data, nvmax = 10)
@@ -506,6 +506,7 @@ pred.plot<- ggplot(data, aes(x = Total.Food.Expenditure, y = phat, colour = Hous
   labs(x = "Total Food Expenditure (10000 pesos)", y = "Expected Number of Family Members")
 print(pred.plot + scale_colour_manual(values=c("lightskyblue", "blue")))
 ```
+Figure 14 and Figure 15 show the expected, and observed, number of household members plotted against the covariate Total Food Expenditure, respectively. The fitted model lines of regression for the male and female groups can also be seen on these plots. For Figure 14, the two fitted lines can be seen to diverge as Food Expenditure increases, whereas in Figure 15, the two fitted lines can be seen converging as Food Expenditure, suggesting that the predicted model and hence predicted data could be improved upon.
 
 ```{r comp plot, eval = TRUE, fig.align='center', fig.cap="Observed Numbers of Household Members and Food Expenditure", out.width='80%', fig.pos = "H"}
 comp.plot<- ggplot(data, aes(x = Total.Food.Expenditure, y = Total.Number.of.Family.members, colour = Household.Head.Sex)) +
@@ -514,6 +515,8 @@ comp.plot<- ggplot(data, aes(x = Total.Food.Expenditure, y = Total.Number.of.Fam
   labs(x = "Total Food Expenditure (10000 pesos)", y = "Number of Family Members")
 print(comp.plot + scale_colour_manual(values=c("lightskyblue", "blue")))
 ```
+
+Figure 16 shows the observed number of household members against the expected number of household members, there is a definite moderate positive correlation between these variables but it is not a perfect correlation. This suggests the model may be improved upon, which is an area for further analysis.
 
 ```{r pred vs obs, eval = TRUE, fig.align='center', fig.cap="Predicted Numbers of Household Members against Observed Number of Household Members", out.width='80%', fig.pos = "H"}
 pred.plot1<- ggplot(data, aes(x = Total.Number.of.Family.members, y = phat)) +
