@@ -2,12 +2,12 @@
 title: "Group_01_Project2_demo"
 author: "Group_01"
 output:
+  html_document:
+    df_print: paged
   pdf_document:
     latex_engine: pdflatex
     number_sections: no
     keep_tex: true
-  html_document:
-    df_print: paged
 fig_caption: yes
 ---
 
@@ -165,7 +165,7 @@ table_household<- data.cat %>%
   adorn_totals("row") %>%
   adorn_pct_formatting(); 
 knitr::kable(table_sex, booktabs = TRUE, caption = "Summary of Categorial Explanatory Variables")
-knitr::kable(table_household, booktabs = TRUE, align = "c")
+knitr::kable(table_household, booktabs = TRUE, align = "c") 
 ```
 
 The pairs plot in Figure 3 is colour coded to illustrate any differences between the distributions of the quantitative variables when the head of household sex is included as a factor. The plots suggest the sex of the head of household may impact the number of family members in the household and the age of the head of the household.
@@ -180,7 +180,7 @@ print(pairplot + scale_colour_manual(values=c("skyblue", "blue1"))+ scale_fill_m
 =======
 Figure 4 shows that an extended family household or one formed by non-related individuals is more likely to have a female head, whereas a larger proportion of single family households have male heads. 
 
-```{r barplot of sex by type of household, eval = TRUE, fig.align='center', fig.cap="Barplot of household head's sex by type of household", out.width='80%', fig.pos = "H"}
+```{r barplot1 of sex by type of household, eval = TRUE, fig.align='center', fig.cap="Barplot of household head's sex by type of household", out.width='80%', fig.pos = "H"}
 barplot1<- ggplot(data = data, aes(x = Type.of.Household, group = Household.Head.Sex)) +
   geom_bar(aes(y = ..prop.., fill = Household.Head.Sex), stat = "count", position = "dodge") +
   labs(x = "Type of Household", y = "Proportion")
@@ -191,13 +191,13 @@ print(barplot1 + scale_fill_manual(values=c("lightskyblue1", "blue1")))
 ***
 \newpage
 
-# Analysis of Relationships between Covariates {#sec:ARC}
+# Analysis of Relationships between variables {#sec:ARC}
 
 ## The relationship between independent and dependent variables
 
 We will explore whether nine variables related to households in the dataset have an impact on the number of people living in the house (Total.Number.of.Family.members). These nine variables are Annual household income, Annual expenditure by the household on food, Head of the households sex, Head of the households age, Relationship between the group of people living in the house, Floor area of the house, Age of the building, Number of bedrooms in the house and House electrification situation. 
 
-First let's look at the scatterplot of the response variable versus the numerical variable.
+First let's look at the scatterplots  and boxplots of the response variable versus the explanatory variables.
 
 ```{r echo=FALSE, out.width= '100%', fig.align = "center"}
 p1= ggplot(data, aes(x = Total.Household.Income,y=Total.Number.of.Family.members)) + 
@@ -220,8 +220,33 @@ p5= ggplot(data, aes(x = House.Age, y = Total.Number.of.Family.members)) +
   geom_jitter(width = 0.1, color="lightskyblue1") +
   labs(x = "Age of the building(years)",y="Number of people living in the house")+
   theme(axis.title.x = element_text(size = 7), axis.title.y = element_text(size = 7))
-grid.arrange(p1, p2,p3,p4,p5, ncol = 3)
+
+
+p6= ggplot(data = data, aes(x = Household.Head.Sex, y = Total.Number.of.Family.members,fill= Household.Head.Sex)) +
+  geom_boxplot() +
+  labs(x = "Head of Household Sex", y = "Number of people living in the house")+ 
+  theme(legend.position = "none", axis.title.x = element_text(size = 7), axis.title.y= element_text(size = 7))
+
+p7=ggplot(data, aes(x = Type.of.Household, y = Total.Number.of.Family.members, fill=Type.of.Household)) +
+  geom_boxplot() +
+  labs(x = "Type of Household", y = "Number of people living in the house")+ 
+  theme(legend.position = "none", axis.title.x = element_text(size = 6), axis.title.y= element_text(size = 7))+
+  scale_x_discrete(labels=c("Extend","Single","Two/more"))
+
+p8=ggplot(data = data, aes(x = as.factor(Number.of.bedrooms), y = Total.Number.of.Family.members,fill=Number.of.bedrooms)) +
+  geom_boxplot() +
+  labs(x = "Number of bedrooms", y = "Number of people living in the house")+ 
+  theme(legend.position = "none",axis.title.x = element_text(size = 7), axis.title.y= element_text(size = 7))
+
+p9= ggplot(data = data, aes(x = as.factor(Electricity), y = Total.Number.of.Family.members,fill=Electricity)) +
+  geom_boxplot() +
+  labs(x = "Electricity", y = "Number of people living in the house")+ 
+  theme(legend.position = "none", axis.title.x = element_text(size = 7), axis.title.y= element_text(size = 7))
+
+grid.arrange(p1, p2,p3,p4,p5,p6,p7,p8,p9, ncol = 3)
 ```
+Based on the figure, it can be seen that food expenditure, age of the homeowner, gender of the homeowner and age of the house seem to have a weak effect on the number of people in the household. However, we will analyze the details below by GLM.   
+
 
 ## Gender & Age
 
@@ -390,7 +415,7 @@ model_poisson_full %>%
 ```
 
 The poisson model fitted with all possible covariates concludes there are six statistically significant predictors at the 5% level. These are the total household income and food expenditure, the age and gender of the head of the household, the age of the house and if it is a single family household. 
-Table 5 shows the estimates and the lower and upper bounds of the 95% confidence intervals for the regression parameters. The rows containing significant predictors, and so where the confidence intervals do not include 0, are highlighted. 
+Table 5 shows the estimates and the lower and upper bounds of the 95% confidence intervals for the regression parameters. The rows containing significant predictors, and so where the confidence intervals do not include 0, are highlighted. We can clearly see that the confidence intervals for area, number of bedrooms, and electricity access include 0. This indicates that these three variables have essentially no effect on the number of people in the household, which exactly validates the results for the p-value as well.
 
 ```{r table of estimates and confidence intervals, eval=TRUE}
 poisson.int<- as.data.frame(confint(model_poisson_full))
@@ -411,6 +436,8 @@ model_poisson_significant <- glm(Total.Number.of.Family.members ~ Total.Househol
 model_poisson_significant %>%
   summary()
 ```
+
+It is important to note that the p-value for family type being more than two people is greater than 0.05, which indicates that family type being more than two people does not have an effect on the response variable, but being single(p value <0.05) does have an effect on the number of people in the household.
 
 ```{r table of estimates and confidence intervals sig, eval=TRUE}
 poisson.sig.int<- as.data.frame(confint(model_poisson_significant))
@@ -485,7 +512,7 @@ ggplot(data, aes(x = Total.Food.Expenditure, y = Total.Number.of.Family.members,
 
 # Conclusions {#sec:Conc}
 
-In conclusion, 
+Combining the p-values and confidence intervals for each variable, we can conclude. Household income, food expenditure, age of the homeowner, sex of the homeowner, age of the house, and type of household(Single Family and Extended Family, absolutely not including Two or More Nonrelated Persons/Members) all have an effect on the number of members in a household. 
 
 
 ***

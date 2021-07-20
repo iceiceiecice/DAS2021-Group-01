@@ -131,6 +131,18 @@ The summary below shows the count data for each level of the response
 variable and the percentage of total households in the region in each
 group.
 
+Figure 2 shows a graphical visualisation for all the variables in the
+data set.
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.8\linewidth]{Group_01_Project2_demo_files/figure-latex/all summaries-1} 
+
+}
+
+\caption{Graphical Summaries of Variables}\label{fig:all summaries}
+\end{figure}
+
 Table 1 shows summary data for all the numerical variables.There is no
 missing data within these variables and so no values will need to be
 imputed for the analysis in the report. The response variable, total
@@ -245,27 +257,62 @@ Total & 1725 & 100.0\%\\
 \bottomrule
 \end{tabular}
 
-The pairs plot in Figure 2 is colour coded to illustrate any differences
+The pairs plot in Figure 3 is colour coded to illustrate any differences
 between the distributions of the quantitative variables when the head of
 household sex is included as a factor. The plots suggest the sex of the
 head of household may impact the number of family members in the
 household and the age of the head of the household.
 
-\begin{figure}
+\textless\textless\textless\textless\textless\textless\textless{} HEAD
+
+\begin{figure}[H]
 
 {\centering \includegraphics[width=1\linewidth]{Group_01_Project2_demo_files/figure-latex/pairs-1} 
 
 }
 
-\caption{Paired plots of the variables}\label{fig:pairs}
+\caption{Pair plots and correlation between numerical variables, colour coded to show the sex of the head of household.}\label{fig:pairs}
 \end{figure}
+
+\hypertarget{head}{%
+\section{\textless\textless\textless\textless\textless\textless\textless{}
+HEAD}\label{head}}
+
+Figure 4 shows that an extended family household or one formed by
+non-related individuals is more likely to have a female head, whereas a
+larger proportion of single family households have male heads.
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=0.8\linewidth]{Group_01_Project2_demo_files/figure-latex/barplot1 of sex by type of household-1} 
+
+}
+
+\caption{Barplot of household head's sex by type of household}\label{fig:barplot1 of sex by type of household}
+\end{figure}
+
+\begin{quote}
+\begin{quote}
+\begin{quote}
+\begin{quote}
+\begin{quote}
+\begin{quote}
+\begin{quote}
+73f02510c1fbb3a69ca3d233e9d5d68f2aebc7c4
+\end{quote}
+\end{quote}
+\end{quote}
+\end{quote}
+\end{quote}
+\end{quote}
+\end{quote}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
 \newpage
 
 \hypertarget{sec:ARC}{%
-\section{Analysis of Relationships between Covariates}\label{sec:ARC}}
+\section{Analysis of Relationships between variables}\label{sec:ARC}}
 
 \hypertarget{the-relationship-between-independent-and-dependent-variables}{%
 \subsection{The relationship between independent and dependent
@@ -313,7 +360,7 @@ Male & 1356 & 50.59 & 13.74 & 20 & 40 & 49 & 61 & 98\\
 \end{tabular}
 \end{table}
 
-The boxplot in Figure 4 illustrates the previously summarised data. The
+The boxplot in Figure 5 illustrates the previously summarised data. The
 boxplot identifies the two oldest male head of households as outliers
 (shown by the points above the whisker), however within the context of
 the data and when compared to the ages of female head of household
@@ -344,7 +391,7 @@ alternative hypothesis: true location shift is not equal to 0
 \subsection{Household Income and Food
 Expenditure}\label{household-income-and-food-expenditure}}
 
-Figure 5 shows a boxplot of household incomes suggests a heavily skewed
+Figure 6 shows a boxplot of household incomes suggests a heavily skewed
 distribution with many outliers at the upper end of the distribution.
 
 \begin{figure}[H]
@@ -356,7 +403,7 @@ distribution with many outliers at the upper end of the distribution.
 \caption{Household Incomes in 10000 Phillipine Pesos.}\label{fig:balance boxplot}
 \end{figure}
 
-The following boxplot in Figure 6 shows the log transformed household
+The following boxplot in Figure 7 shows the log transformed household
 income and shows there are still several outliers following the
 transformation.
 
@@ -369,7 +416,7 @@ transformation.
 \caption{Boxplot of log transformed Incomes.}\label{fig:balance boxplot2}
 \end{figure}
 
-The scatterplot in Figure 7 of household income against total food
+The scatterplot in Figure 8 of household income against total food
 expenditure suggests a positive correlation but the fitted model may be
 being heavily influenced by the extreme values, particularly by one
 extreme point.
@@ -383,10 +430,10 @@ extreme point.
 \caption{Scatterplot of Income against Food Expenditure.}\label{fig:balance_plot}
 \end{figure}
 
-Figure 7 again highlights a possible outlier in terms of income, this
+Figure 8 again highlights a possible outlier in terms of income, this
 could be a data entry error or just an outlier at the maximum. Removing
 this observation from the data set and plotting provides the following
-scatter diagram in Figure 8. This plot reconfirms the suggested positive
+scatter diagram in Figure 9. This plot reconfirms the suggested positive
 correlation, but there is still an imbalance in the amount of data
 available at different levels of income. For example, most data is
 available for incomes between 0 and 750000 peso, but far fewer data
@@ -414,7 +461,7 @@ Sex}\label{number-of-family-members-head-of-household-sex}}
 \caption{Number of Members in Household by Sex of Head of Household}\label{fig:boxplot of sex and members}
 \end{figure}
 
-Hence we can see from Figure 9 that households with a male head appear
+Hence we can see from Figure 10 that households with a male head appear
 to have a greater number of family members on average than those with a
 female head, as the male group has larger values for the first and third
 quartiles and the median. However there is overlap between the two
@@ -617,7 +664,11 @@ the head of the household, the age of the house and if it is a single
 family household. Table 5 shows the estimates and the lower and upper
 bounds of the 95\% confidence intervals for the regression parameters.
 The rows containing significant predictors, and so where the confidence
-intervals do not include 0, are highlighted.
+intervals do not include 0, are highlighted. We can clearly see that the
+confidence intervals for area, number of bedrooms, and electricity
+access include 0. This indicates that these three variables have
+essentially no effect on the number of people in the household, which
+exactly validates the results for the p-value as well.
 
 \textbackslash begin\{table\}
 
@@ -806,7 +857,9 @@ where
   \(\beta_4\) is the coefficient for the second explanatory variable
   \(x_4\);
 \item
-  \(\widehat{\beta}_{\mbox{M}}\) i
+  \(\widehat{\beta}_{\mbox{M}}\) is the difference in the mean total
+  number of family members of a male household head relative to the
+  female household head; and
 \item
   \(\epsilon_i\) is the \(i^{th}\) random error component; and
 \item
