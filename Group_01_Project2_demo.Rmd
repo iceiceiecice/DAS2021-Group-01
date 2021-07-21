@@ -2,12 +2,12 @@
 title: "Group_01_Project2_demo"
 author: "Group_01"
 output:
+  html_document:
+    df_print: paged
   pdf_document:
     latex_engine: pdflatex
     number_sections: no
     keep_tex: true
-  html_document:
-    df_print: paged
 fig_caption: yes
 ---
 
@@ -415,7 +415,7 @@ model_poisson_full <- glm(Total.Number.of.Family.members ~ Total.Household.Incom
                 Total.Food.Expenditure + Household.Head.Age + House.Floor.Area + House.Age + Number.of.bedrooms + Electricity + Household.Head.Sex + Type.of.Household, family = poisson(link = "log"), data = data)
 
 model_poisson_full %>%
-  summary()
+  summ()
 ```
 
 The poisson model fitted with all possible covariates concludes there are six statistically significant predictors at the 5% level. These are the total household income and food expenditure, the age and gender of the head of the household, the age of the house and if it is a single family household. 
@@ -438,7 +438,7 @@ We refit the model to include just the previously identified significant covaria
 ```{r poisson model with significant variables}
 model_poisson_significant <- glm(Total.Number.of.Family.members ~ Total.Household.Income + Total.Food.Expenditure + Household.Head.Age + House.Age + Household.Head.Sex + Type.of.Household, family = poisson(link = "log"), data = data)
 model_poisson_significant %>%
-  summary()
+  summ()
 ```
 
 It is important to note that the p-value for Family type of two or more unrelated individuals is greater than 0.05, thus indicating that a family type of two or more nonrelated persons is not a statistically significant explanatory variable, but households composed of a single family (p value <0.05) is a statistically significant predictor for the number of members of a household.
@@ -473,7 +473,7 @@ bind_rows(glance(model_poisson_full), glance(model_poisson_significant),.id="Mod
 From table 8, we find the AIC value of two fitted poisson models are very similar, however, the BIC value for the significant factors model is lower and so we accept the significant factors model as the better fit for the data.
 
 The poisson regression model that will be fitted to the data is as follows:
-$$log(\tilde{\lambda_i}) = \alpha + \beta_1 x_{1i} + \beta_2 x_{2i} + \beta_3 x_{3i} + \beta_4 x_{4i} + \widehat{\beta}_{\mbox{M}} \cdot \mathbb{I}_{\mbox{M}}(i) + \epsilon_i, ~~~~ \epsilon \sim N(0, \sigma^2),$$
+$$log(\tilde{\lambda_i}) = \alpha + \beta_1 x_{1i} + \beta_2 x_{2i} + \beta_3 x_{3i} + \beta_4 x_{4i} + \widehat{\beta}_{\mbox{M}} \cdot \mathbb{I}_{\mbox{M}}(i)+\widehat{\beta}_{\mbox{S}} \cdot \mathbb{I}_{\mbox{S}}(i) + \epsilon_i, ~~~~ \epsilon \sim N(0, \sigma^2),$$
 where
 
  - $log(\tilde{\lambda_i})$ is the Total Number of Household Members of the $i^{th}$ household;
@@ -487,8 +487,9 @@ where
  - $\beta_3$ is the coefficient for the third explanatory variable $x_3$;
  - $\beta_4$ is the coefficient for the fourth explanatory variable $x_4$;
  - $\widehat{\beta}_{\mbox{M}}$ is the difference in the mean total number of household members in a  household with a male head relative to a female head; 
+ - $\widehat{\beta}_{\mbox{S}}$ is the difference in the mean total number of household members in a  household with Extended Family relative to Single Family;
  - $\epsilon_i$ is the $i^{th}$ random error component; and
- - $\mathbb{I}_{\mbox{F}}(i)$ is an indicator function such that
+ - $\mathbb{I}_{\mbox{M}}(i)$ is an indicator function such that
  
 $$\mathbb{I}_{\mbox{M}}(i)=\left\{
 \begin{array}{ll}
@@ -497,6 +498,14 @@ $$\mathbb{I}_{\mbox{M}}(i)=\left\{
 \end{array}
 \right.$$
 
+ - $\mathbb{I}_{\mbox{S}}(i)$ is an indicator function such that
+ 
+$$\mathbb{I}_{\mbox{S}}(i)=\left\{
+\begin{array}{ll}
+1 ~~~ \mbox{if the type of household of} ~ i \mbox{th observation is Single Family},\\
+0 ~~~ \mbox{Otherwise}.\\
+\end{array}
+\right.$$
 
 ```{r pred plot, eval = TRUE, fig.align='center', fig.cap="Predicted Numbers of Household Members and Food Expenditure", out.width='80%', fig.pos = "H"}
 data$phat <- predict(model_poisson_full, type = "response")
